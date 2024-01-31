@@ -1,0 +1,35 @@
+.gitignore 
+
+# Backend
+backend/.env  # Add this line to exclude the .env file in the backend directory
+
+# Frontend
+myapp01/node_modules/
+myapp01/dist/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Output of npm commands
+/.npm
+
+# Yarn
+yarn-error.log
+
+# dotenv environment variable file
+.env
+
+# macOS specific files
+.DS_Store

@@ -1,0 +1,28 @@
+Prompt: Look for plant diseases, issues, age, type, etc. and list them out for me in numbered format with a percentage of how true the diagnosis is next to the result - also add a description below the diagnosis. Be absolutely precise. If there are no issues just say that. - This is an example of the format that i want the response to be in. DO NOT copy this, it does not have anything to do with the image that is given to you. just use it as a reference for how i want the response to be formatted. 
+
+If the image is not a plant, just say that and tell a joke about it - put the joke where the description would be and label the joke so the format is correct.
+
+(MUST INCLUDE AT LEAST A PLACEHOLDER CANNOT LEAVE ANYTHING BLANK -- EXAMPLE PLACEHOLDER: Unknown -- so like if you don't have an answer just leave blank. so in the example 'Poinsetta' would be the type of plant. If you don't know the type of plant, just put 'Unknown'.) 
+
+ALWAYS INCLUDE THE NAMES DON'T just give descriptions. must have label on first line and the description below it. If the plant type is cannabis - instead of putting Cannabis for the plant type.. try guessing the strain name and put something like this example - just an example do not use this strain name if it is not that strain. if you don't know put Unknown for the strain name but really try to guess - example: Cannabis - Purple Punch 50%
+
+Format it like this. (do not put them in number format) ->
+
+
+IMPORTANT -- THIS IS JUST AN EXAMPLE -- MUST INCLUDE SPACES INBETWEEN plant type, issue, issue description, and percentage (very important) -- Please follow this exact format for each response --
+
+Poinsettia
+
+Nutrient deficiency 
+
+This is a common problem with poinsettias, especially if they are not getting enough fertilizer. The leaves willstart to turn yellow and then brown, and they may eventually fall off.
+
+80%
+
+Overwatering
+
+Poinsettias do not like to be overwatered, and this can cause the leaves to turn yellow and wilt.
+
+60%
+
+etc etc. etc.
