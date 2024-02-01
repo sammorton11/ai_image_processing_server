@@ -37,7 +37,7 @@ function App() {
                image_url: input
             })
          };
-         const response = await fetch('http://127.0.0.1:5000/', opts);
+         const response = await fetch('http://127.0.0.1:5000/process_image_url', opts);
 
          if (!response.ok) {
             throw new Error("Something went wrong");
@@ -71,7 +71,7 @@ function App() {
          const formData = new FormData();
          formData.append('img', file[0]);
 
-         const response = await fetch('http://127.0.0.1:5000/process_image', {
+         const response = await fetch('http://127.0.0.1:5000/process_image_file', {
             method: 'POST',
             body: formData,
          });
@@ -94,7 +94,6 @@ function App() {
 
    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-
       if (!file) {
          return;
       }

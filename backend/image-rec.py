@@ -7,10 +7,8 @@ from dotenv import load_dotenv
 import logging
 import os
 
-
 load_dotenv()
 
-# Replace with your actual API key
 api_key = os.getenv("API_KEY")
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-pro-vision')
@@ -42,9 +40,7 @@ def send_image_file(image):
         stream=True
     )
     response.resolve()
-    print("Response: " + str(response.candidates))
     response_string = response.candidates[0].content.parts[0].text
-    print("Response: " + str(response_string))
 
     # Take the string from the response and format it into a dictionary
     response_as_dictionary = string_to_dict(response_string)
@@ -84,43 +80,42 @@ def send_image_url(image_path):
         })
 
 
-def string_to_dict(response_string):
+def string_to_dict2(response_string):
     # Split the response by empty lines
     entries = [entry.strip() for entry in response_string.strip().split('\n\n')]
-    print("Entries: " + str(entries))
-
-    # Extract the plant type
-    plant_type = entries[0]
 
     # Initialize the data dictionary
     data = {
-        "type": plant_type,
+        "type": "",
         "issues": []
     }
 
-    print("Entries: " + str(entries))
-
-    # There has to be a better way to do this
     # Iterate over entries starting from the second entry
-    for i in range(1, len(entries), 3):
-        if i + 1 >= len(entries) or i + 2 >= len(entries):
+    for i in range(0, len(entries), 3):
+        if i + 1 >= len(entries) or i + 2 >= len(entries): # can't remember why I need the index + 2 ..?
             break
 
-        name = entries[i] # first line of response is the name or type
-        description = entries[i + 1] # second line of response is the description
-        percent = entries[i + 2] # third line of response is the probablity
+        plant_type = entries[0] # first line of response
+        deficiency_name = entries[i + 1] # second line of response 
+        description = entries[i + 2] # third line of response 
+        percent = entries[i + 3] # four line of response 
+
+        data["type"] = plant_type
+        print(data["type"])
 
         data["issues"].append({
-            "name": name,
+            "name": deficiency_name,
             "description": description,
             "percent": percent
         })
 
+        print(data)
+
     return data
 
 
-@app.route('/', methods=['POST'])
-def response_text():
+@app.route('/process_image_url', methods=['POST'])
+def process_image_url():
     data = request.get_json()
     image_path = data.get('image_url', '')  # Adjust the parameter name
 
@@ -141,8 +136,8 @@ def response_text():
     return jsonify(ai_response)
 
 
-@app.route('/process_image', methods=['POST'])
-def process_image():
+@app.route('/process_image_file', methods=['POST'])
+def process_image_file():
     try:
         img_file = request.files['img']
         img = read_image(img_file)
