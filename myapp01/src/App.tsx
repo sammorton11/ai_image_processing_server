@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from './components/ui/button';
 import { PacmanLoader } from 'react-spinners';
 import GraphComponent from './components/GraphComponent';
+import { Data } from 'victory';
 
 interface Data {
    type: string;
@@ -14,8 +15,30 @@ interface Issue {
    percent: string;
 }
 
+const fakeData = {
+  "issues": [
+    {
+      "description": "Symptoms include reddish-blue spots on the leaves, with dark purple spots on the canes. The spots may grow in size and merge, leading to yellowing of the leaves and premature shedding. Anthracnose can also result in cracking and cankers on the canes. To combat anthracnose, it is recommended to prune and eliminate infected canes, and apply a suitable fungicide to the plants.",
+      "name": "Anthracnose",
+      "percent": "100.0"
+    },
+    {
+      "description": "Fake Issue 2 Description",
+      "name": "Fake Issue 2",
+      "percent": "25.0"
+    },
+    {
+      "description": "Fake Issue 3 Description",
+      "name": "Fake Issue 3",
+      "percent": "25.0"
+    }
+  ],
+  "type": "Gooseberry"
+}
+
+
 function App() {
-   const [data, setData] = useState<Data | null>(null);
+   const [data, setData] = useState<Data | null>(fakeData);
    const [input, setInput] = useState("");
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState("");
@@ -33,6 +56,7 @@ function App() {
       setLoading(true);
       setImage(input);
       setData(null);
+      setShowGraph(false);
 
       try {
          const opts = {
@@ -153,45 +177,48 @@ function App() {
                   <Button className='bg-lime-100 text-slate-900' onClick={(event) => handleSubmit(event)}>Submit File</Button>
                </section>
 
-               {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="350" height="250" /> : null}
+               {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="550" height="350" /> : null}
 
                <PacmanLoader className='w-full' color='#65A30D' loading={loading} />
+               {/* GraphComponent is only rendered when showGraph is true */}
+               {showGraph && data && data.issues && (
+                  <GraphComponent issues={data.issues} type={data.type} />
+               )}
             </div>
 
-            <div className='p-4 mr-14 w-3/4 bg-lime-100 rounded-md' >
-               {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
-               <ul>
-                  {data && data.issues.map((item) => (
-                     <li className='pb-5' key={item.name}>
-                        <div className='font-bold text-lg'>{item.name}</div>
-                        <div>{item.description}</div>
-                        <br />
-                        <div>Probability: {item.percent}</div>
-                     </li>
-                  ))}
-                  {data ? (
-                     <div>
-                        <Button className='bg-lime-100 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
-                        <Button className='bg-lime-100 text-slate-900' onClick={(event) => {
-                           if (file === null) {
-                              getGeminiResponse(input);
-                           } else if (input === "") {
-                              handleSubmit(event);
-                           }
-                        }}>
-                           Retry
-                        </Button>
-                        <Button className='bg-lime-100 text-slate-900' onClick={(event) => showHideGraph(event)}>Show Graph</Button>
-                     </div>
-                  ) : null}
-               </ul>
+            {data ? (
 
-
-            {/* GraphComponent is only rendered when showGraph is true */}
-            {showGraph && data && data.issues && (
-               <GraphComponent issues={data.issues} type={data.type} />
-            )}
-            </div>
+               <div className='p-4 mr-14 w-3/4 bg-lime-100 rounded-md' >
+                  {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
+                  <ul>
+                     {data && data.issues.map((item) => (
+                        <li className='pb-5' key={item.name}>
+                           <div className='font-bold text-lg'>{item.name}</div>
+                           <div>{item.description}</div>
+                           <br />
+                           <div>Probability: {item.percent}</div>
+                        </li>
+                     ))}
+                     {data ? (
+                        <div>
+                           <Button className='bg-lime-100 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
+                           <Button className='bg-lime-100 text-slate-900' onClick={(event) => {
+                              if (file === null) {
+                                 getGeminiResponse(input);
+                              } else if (input === "") {
+                                 handleSubmit(event);
+                              }
+                           }}>
+                              Retry
+                           </Button>
+                           {data.issues.length > 1 ? (
+                              <Button className='bg-lime-100 text-slate-900' onClick={(event) => showHideGraph(event)}>Show Graph</Button>
+                           ) : null}
+                        </div>
+                     ) : null}
+                  </ul>
+               </div>
+            ) : null}
          </div>
       </>
    );

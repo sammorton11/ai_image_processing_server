@@ -9,7 +9,7 @@ Issue description: [Description of the deficiency and its possible causes and so
 
 Percentage: [Percentage or likeliness of the deficiency or 50.0 if the Issue is unknown]
 
-[Repeat the above three lines for each identified deficiency]
+[Repeat the above three lines for each identified deficiency - give as many as you can find]
 
 
 

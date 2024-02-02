@@ -28,21 +28,19 @@ def read_image(path):
 def send_image_file(image):
     try:
         with open('prompt2.txt', 'r', encoding='utf-8') as file:
-            example = file.read()
+            file_text = file.read()
     except FileNotFoundError:
         print("No example file found")
 
-    promt = example
+    prompt = file_text
 
     # Generate content using the model
     response = model.generate_content(
-        [promt, image],
+        [prompt, image],
         stream=True
     )
     response.resolve()
     response_string = response.candidates[0].content.parts[0].text
-
-    # Take the string from the response and format it into a dictionary
     response_as_dictionary = string_to_dict(response_string)
 
     return response_as_dictionary
@@ -67,7 +65,6 @@ def send_image_url(image_path):
         response.resolve()
         response_string = response.candidates[0].content.parts[0].text
 
-        # Take the string from the response and format it into a dictionary
         response_as_dictionary = string_to_dict(response_string)
 
         return response_as_dictionary
@@ -80,13 +77,13 @@ def send_image_url(image_path):
         })
 
 
+# Process the response string from the LLM API into a dictionary to send as json
 def string_to_dict(response_string):
     # Split the response by empty lines
-    entries = [entry.strip() for entry in response_string.strip().split('\n\n')]
+    split_string = response_string.strip().split('\n\n')
+    entries = [entry.strip() for entry in split_string]
 
-    plant_type = entries[0] # first line is plant type
-
-    # Initialize the data dictionary
+    plant_type = entries[0]
     data = {
         "type": plant_type,
         "issues": []
@@ -107,7 +104,7 @@ def string_to_dict(response_string):
 @app.route('/process_image_url', methods=['POST'])
 def process_image_url():
     data = request.get_json()
-    image_path = data.get('image_url', '')  # Adjust the parameter name
+    image_path = data.get('image_url', '')
 
     try:
         ai_response = send_image_url(image_path)

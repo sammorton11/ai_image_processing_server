@@ -43,10 +43,14 @@ const GraphComponent: React.FC<GraphProps> = ({ issues, type }) => {
    console.log("Data: ", data.datasets[0].data);
 
    return (
-      <div className='max-w-2xl'>
-         <V.VictoryChart theme={V.VictoryTheme.material}>
+      <div className='w-3/4 max-w-2xl'>
+         <V.VictoryChart 
+            theme={V.VictoryTheme.material}
+            domainPadding={12}
+            minDomain={{x: 0}}
+         >
             <V.VictoryAxis dependentAxis tickFormat={(x) => (`${x}%`)} />
-            <V.VictoryAxis style={{ tickLabels: { angle: 18, fontSize: 8} }}/> 
+            <V.VictoryAxis style={{ tickLabels: { angle: 18, fontSize: 8, padding: 8} }}/> 
             <V.VictoryBar
                data={victData}
                x="type"
