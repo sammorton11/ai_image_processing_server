@@ -27,7 +27,7 @@ def read_image(path):
 
 def send_image_file(image):
     try:
-        with open('example.txt', 'r', encoding='utf-8') as file:
+        with open('prompt2.txt', 'r', encoding='utf-8') as file:
             example = file.read()
     except FileNotFoundError:
         print("No example file found")
@@ -52,7 +52,7 @@ def send_image_url(image_path):
     img = read_image(image_path)
 
     try:
-        with open('example.txt', 'r', encoding='utf-8') as file:
+        with open('prompt2.txt', 'r', encoding='utf-8') as file:
             example = file.read()
     except FileNotFoundError:
         print("No example file found")
@@ -80,36 +80,26 @@ def send_image_url(image_path):
         })
 
 
-def string_to_dict2(response_string):
+def string_to_dict(response_string):
     # Split the response by empty lines
     entries = [entry.strip() for entry in response_string.strip().split('\n\n')]
 
+    plant_type = entries[0] # first line is plant type
+
     # Initialize the data dictionary
     data = {
-        "type": "",
+        "type": plant_type,
         "issues": []
     }
 
     # Iterate over entries starting from the second entry
-    for i in range(0, len(entries), 3):
-        if i + 1 >= len(entries) or i + 2 >= len(entries): # can't remember why I need the index + 2 ..?
-            break
-
-        plant_type = entries[0] # first line of response
-        deficiency_name = entries[i + 1] # second line of response 
-        description = entries[i + 2] # third line of response 
-        percent = entries[i + 3] # four line of response 
-
-        data["type"] = plant_type
-        print(data["type"])
-
+    iter_ent = iter(entries[1:])  # Skip the first entry
+    for deficiency_name, desc, percent in zip(iter_ent, iter_ent, iter_ent):
         data["issues"].append({
             "name": deficiency_name,
-            "description": description,
+            "description": desc,
             "percent": percent
         })
-
-        print(data)
 
     return data
 

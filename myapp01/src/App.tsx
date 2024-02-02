@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from './components/ui/button';
 import { PacmanLoader } from 'react-spinners';
+import GraphComponent from './components/GraphComponent';
 
 interface Data {
    type: string;
@@ -20,6 +21,12 @@ function App() {
    const [error, setError] = useState("");
    const [file, setFile] = useState<FileList | null>(null);
    const [image, setImage] = useState("");
+   const [showGraph, setShowGraph] = useState(false);
+
+   function showHideGraph(e: React.MouseEvent<HTMLButtonElement>) {
+      e.preventDefault();
+      setShowGraph(!showGraph);
+   }
 
    async function getGeminiResponse(input: string) {
       setError("");
@@ -51,6 +58,7 @@ function App() {
          }
 
          const result = responseData;
+         console.log("Result: ", result);
          setLoading(false);
          setData(result);
 
@@ -116,7 +124,7 @@ function App() {
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       event.preventDefault();
       const value = event.target.files;
-      if(value === null) {
+      if (value === null) {
          console.log("File not found");
          return;
       }
@@ -131,46 +139,59 @@ function App() {
             <h1 className='text-3xl font-bold text-lime-900'>Plant Deficiency Detection AI</h1>
             <p className="py-3">Using Gemini API by Google</p>
          </header>
-         <div className='p-5 text-lime-900 h-full'>
-            {error ? <p>{error}</p> : null}
-            <label className='mr-5 text-lime-900 font-bold'>Image URL:</label>
-            <input className='border border-1 border-lime-900/40 p-2 w-3/4 bg-lime-900/10 rounded-sm mr-10 text-black' onChange={handleInputChange} placeholder='https://vsesorta.ru/upload/iblock/bdc/737923i-khosta-gibridnaya-hands-up.jpg' />
-            <div className='py-5'>
-               <input type="file" onChange={handleFileChange} />
+         <div className='flex flex-row p-5 text-lime-900 h-full'>
+            <div className='pr-6 w-1/2'>
+               {error ? <p>{error}</p> : null}
+               <label className='mr-5 text-lime-900 font-bold'>Image URL:</label>
+               <input className='border border-1 border-lime-900/40 p-2 w-3/4 bg-lime-900/10 rounded-sm mr-10 text-black' onChange={handleInputChange} placeholder='https://vsesorta.ru/upload/iblock/bdc/737923i-khosta-gibridnaya-hands-up.jpg' />
+               <div className='py-5'>
+                  <input type="file" onChange={handleFileChange} />
+               </div>
+               <section className='flex flex-row w-full justify-start'>
+                  <Button className='bg-lime-100 text-slate-900' onClick={() => getGeminiResponse(input)}>Submit URL</Button>
+                  <div className='px-1' />
+                  <Button className='bg-lime-100 text-slate-900' onClick={(event) => handleSubmit(event)}>Submit File</Button>
+               </section>
+
+               {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="350" height="250" /> : null}
+
+               <PacmanLoader className='w-full' color='#65A30D' loading={loading} />
             </div>
-            <section className='flex flex-row w-full justify-start'>
-               <Button className='bg-lime-100 text-slate-900' onClick={() => getGeminiResponse(input)}>Submit URL</Button>
-               <div className='px-1' />
-               <Button className='bg-lime-100 text-slate-900' onClick={(event) => handleSubmit(event)}>Submit File</Button>
-            </section>
 
-            {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="350" height="250" /> : null}
+            <div className='p-4 mr-14 w-3/4 bg-lime-100 rounded-md' >
+               {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
+               <ul>
+                  {data && data.issues.map((item) => (
+                     <li className='pb-5' key={item.name}>
+                        <div className='font-bold text-lg'>{item.name}</div>
+                        <div>{item.description}</div>
+                        <br />
+                        <div>Probability: {item.percent}</div>
+                     </li>
+                  ))}
+                  {data ? (
+                     <div>
+                        <Button className='bg-lime-100 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
+                        <Button className='bg-lime-100 text-slate-900' onClick={(event) => {
+                           if (file === null) {
+                              getGeminiResponse(input);
+                           } else if (input === "") {
+                              handleSubmit(event);
+                           }
+                        }}>
+                           Retry
+                        </Button>
+                        <Button className='bg-lime-100 text-slate-900' onClick={(event) => showHideGraph(event)}>Show Graph</Button>
+                     </div>
+                  ) : null}
+               </ul>
 
-            <PacmanLoader className='w-full' color='#65A30D' loading={loading} />
 
-            {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
-            <ul>
-               {data && data.issues.map((item) => (
-                  <li className='pb-5' key={item.name}>
-                     <div className='font-bold text-lg'>{item.name}</div>
-                     <div>{item.description}</div>
-                     <br />
-                     <div>Probability: {item.percent}</div>
-                  </li>
-               ))}
-               {data ? (
-                  <div>
-                     <Button className='bg-lime-100 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
-                     <Button className='bg-lime-100 text-slate-900' onClick={(event) => {
-                        if (file === null) {
-                           getGeminiResponse(input);
-                        } else if (input === "") {
-                           handleSubmit(event);
-                        }
-                     }}>Retry</Button>
-                  </div>
-               ) : null}
-            </ul>
+            {/* GraphComponent is only rendered when showGraph is true */}
+            {showGraph && data && data.issues && (
+               <GraphComponent issues={data.issues} type={data.type} />
+            )}
+            </div>
          </div>
       </>
    );

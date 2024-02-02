@@ -31,6 +31,7 @@ def string_to_dict(response_string):
 
     return data
 
+
 def string_to_dict2(response_string):
     # Split the response by empty lines
     entries = [entry.strip() for entry in response_string.strip().split('\n\n')]
@@ -43,10 +44,10 @@ def string_to_dict2(response_string):
 
     # Iterate over entries starting from the second entry
     for i in range(0, len(entries), 3):
+        plant_type = entries[0] # first line of response
         if i + 1 >= len(entries) or i + 2 >= len(entries): # can't remember why I need the index + 2 ..?
             break
 
-        plant_type = entries[0] # first line of response
         deficiency_name = entries[i + 1] # second line of response 
         description = entries[i + 2] # third line of response 
         percent = entries[i + 3] # four line of response 
@@ -65,6 +66,32 @@ def string_to_dict2(response_string):
     return data
 
 
+# This is the correct implementation
+def string_to_dict3(response_string):
+    # Split the response by empty lines
+    entries = [entry.strip() for entry in response_string.strip().split('\n\n')]
+
+    plant_type = entries[0] # first line is plant type
+
+    # Initialize the data dictionary
+    data = {
+        "type": plant_type,
+        "issues": []
+    }
+
+    # Iterate over entries starting from the second entry
+    iter_ent = iter(entries[1:])  # Skip the first entry
+    for deficiency_name, desc, percent in zip(iter_ent, iter_ent, iter_ent):
+        data["issues"].append({
+            "name": plant_type,
+            "description": desc,
+            "percent": percent
+        })
+
+    return data
+
+
+
 fake_response = """Poinsettia
 
 Nutrient deficiency 
@@ -80,8 +107,8 @@ Poinsettias do not like to be overwatered, and this can cause the leaves to turn
 60%
 """
 
-result = string_to_dict(fake_response)
-result2 = string_to_dict2(fake_response)
+result = string_to_dict2(fake_response)
+result2 = string_to_dict3(fake_response)
 
 print("First:")
 print(result)

@@ -1,36 +1,21 @@
-Prompt: Look for plant diseases, issues, age, type, etc. and list them out for me in numbered format with a percentage of how true the diagnosis is next to the result - also add a description below the diagnosis. Be absolutely precise. If there are no issues just say that. - This is an example of the format that i want the response to be in. DO NOT copy this, it does not have anything to do with the image that is given to you. just use this as a reference for how i want the response to be formatted. 
+Main Prompt:
+Detect and describe any plant deficiencies in the given image. Please provide information in the following format:
 
-If the image is not a plant, just say that or say to please use an image of some type of plant or mushroom.
+Plant type title: [Plant Type or Unknown]
 
-(MUST INCLUDE AT LEAST A PLACEHOLDER CANNOT LEAVE ANYTHING BLANK -- EXAMPLE PLACEHOLDER: Unknown -- so like if you don't have an answer just leave blank. so in the example 'Poinsetta' would be the type of plant. If you don't know the type of plant, just put 'Unknown'.) 
+Here begins the deficiency list so it's repeated: [Deficiency Title or Unknown]
 
-ALWAYS INCLUDE THE NAMES DON'T just give descriptions. must have label on first line and the description below it. 
+Issue description: [Description of the deficiency and its possible causes and solutions or Unknown - Never separate the description into separate lines, it must be on the same line]
+
+Percentage: [Percentage or likeliness of the deficiency or 50.0 if the Issue is unknown]
+
+[Repeat the above three lines for each identified deficiency]
 
 
 
-Don't just put "Nutrient deficiency" as the issue. Be more specific.
 
-In the description for each issue, be as detailed as possible. Add a suggestion in the description for how to fix the issue if you can.
 
-For deficiencies, don't just copy the examples. Be original. Really try to figure out what deficiencies the plant has.
-if a deficiency is less that 50%, say its unlikely. If its less that 25% say its very unlikely, If it is more than 50% say it is likely. If its more than 75% say its highly likely. If it's 100% say its absolute.
-
-If a nutrient deficiencies probability is less 50% or less, use words like "could be" or "is likely to" instead of absolute phrasing.
-
-Structure of the response that I want:
-----
-Plant type name or Unknown
-
-Issue List:
-   - Title or Unknown
-   - Description or Unknown
-   - Percentage or 0.0
---
-
-Never leave one of these lines blank. If you don't know the type of plant, just put 'Unknown'. If you don't know the issue, just put 'Unknown'. If you don't know the description, just put 'Unknown'. If you don't know the percentage, just put '0.0'. This is very important! You keep leaving parts out of your response and its messing up the format of the components. You MUST include a Plant type or put UNKNOWN, Issue Title or Unknown, Issue description or Unknown, and percentage or Unknown. NEVER LEAVE THESE OUT OF YOUR RESPONSE. Follow the provided examples below to know what format I'm wanting.
-
-Format it EXACTLY like this example - if you do not have a response for one of these lines you must put Unknown or some place holder - E.g You dont know the type of plant so put Unknown do not just leave blank. (do not put them in number format) ->
-
+Below are some examples for your reference - do not copy and do not leave parts of this format out. If you dont have a response for a specific line e.g the Plant Type line (the first line of every response) just put UNKNOWN. Except for percentages. If you don't know the likeliness percentage just put 0.0.
 
 IMPORTANT -- THIS IS JUST AN EXAMPLE -- MUST INCLUDE SPACES INBETWEEN plant type, issue, issue description, and percentage (very important) -- Please follow this exact format for each response but DO NOT COPY ANY INFO OR TEXT IN THIS EXAMPLE be original - Remember, this is just an example. --
 
@@ -66,13 +51,10 @@ Poinsettias do not like to be overwatered, and this can cause the leaves to turn
 
 60%
 
-etc etc. etc.
 
 
-
-
-----
-Example of formats that I don't want:
+---
+Example of format that I don't want - VERY VERY IMPORTANT TO READ CAREFULLY:
 
 Unknown: Powdery Mildew
 
@@ -98,3 +80,14 @@ Powdery Mildew
 Powdery mildew is a common fungal disease that affects many plants, including roses, cucumbers, and grapes. It appears as a white or gray powdery coating on the leaves, stems, and flowers of plants. Powdery mildew can cause leaves to turn yellow and wilt, and it can also reduce the yield of fruit and vegetables. To control powdery mildew, try using a fungicide or a homemade remedy such as a solution of baking soda and water. You can also try to improveair circulation around the plants and water them at the base of the plant rather than overhead.
 
 0.0
+
+
+
+The reason why this is really bad is because that incorrect response format would do this:
+{'type': 'Unknown: Powdery Mildew', 'issues': [{'name': 'Powdery mildew is a common fungal disease that affects many plants, includi
+ng roses, cucumbers, and grapes. It appears as a white or gray powdery coating on the leaves, stems, and flowers of plants. Powdery mildew can ca
+use leaves to turn yellow and wilt, and it can also reduce the yield of fruit and vegetables.', 'description': 'To control powdery mildew, try us
+ing a fungicide or a homemade remedy such as a solution of baking soda and water. You can also try to improve air circulation around the plants a
+nd water them at the base of the plant rather than overhead.', 'percent': '0.0'}]}
+
+The 'Unknown: Powdery Mildew' is not a plant type and issue, it's just a description of the issue. The format is very important because the program will not be able to read the data correctly if it's not in the correct format. 'Unknown' should be the only text on the first line so that it is parsed into the json object as the "type".
