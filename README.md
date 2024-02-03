@@ -65,3 +65,8 @@ This Flask web application leverages Google's Generative AI capabilities to proc
 ## Main Block
 
     Runs the Flask app on port 5000 in debug mode if the script is executed directly.
+
+
+
+![Screenshot 2024-02-02 at 20-47-14 Vite React TS](https://github.com/sammorton11/ai_image_processing_server/assets/86651172/f80cc57d-f247-4587-a323-2c10b00de831)
+
