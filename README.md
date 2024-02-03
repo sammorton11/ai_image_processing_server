@@ -2,6 +2,7 @@
 
 This Flask web application leverages Google's Generative AI capabilities to process images of plants with deficiencies. It provides two endpoints, one for handling image URLs and another for image files.
 
+(Recently added the go server)
 
 ## Dependencies
 
@@ -67,6 +68,5 @@ This Flask web application leverages Google's Generative AI capabilities to proc
     Runs the Flask app on port 5000 in debug mode if the script is executed directly.
 
 
-
-![Screenshot 2024-02-02 at 20-47-14 Vite React TS](https://github.com/sammorton11/ai_image_processing_server/assets/86651172/f80cc57d-f247-4587-a323-2c10b00de831)
+![Screenshot 2024-02-03 at 02-42-54 Vite React TS](https://github.com/sammorton11/ai_image_processing_server/assets/86651172/09c7e7e0-e6f7-497c-a993-9ddb32cf67fc)
 
