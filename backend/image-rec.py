@@ -19,7 +19,6 @@ app.app_context()
 logging.basicConfig(level=logging.DEBUG)
 
 
-# Helper function to read an image from a local path
 def read_image(path):
     img = iio.imread(path)
     return Image.fromarray(img)
@@ -42,6 +41,8 @@ def send_image_file(image):
     response.resolve()
     response_string = response.candidates[0].content.parts[0].text
     response_as_dictionary = string_to_dict(response_string)
+    print("RESPONSE FROM AI:")
+    print(response_string)
 
     return response_as_dictionary
 
@@ -64,6 +65,9 @@ def send_image_url(image_path):
         )
         response.resolve()
         response_string = response.candidates[0].content.parts[0].text
+
+        print("RESPONSE FROM AI:")
+        print(response_string)
 
         response_as_dictionary = string_to_dict(response_string)
 
@@ -127,7 +131,11 @@ def process_image_url():
 def process_image_file():
     try:
         img_file = request.files['img']
+        print("IMAGE FILE:")
+        print(img_file)
         img = read_image(img_file)
+        print("IMAGE:")
+        print(img)
 
         response_text = send_image_file(img)
         print(response_text)

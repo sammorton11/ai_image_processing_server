@@ -52,11 +52,11 @@ function App() {
    }
 
    async function getGeminiResponse(input: string) {
-      setError("");
       setLoading(true);
+      setShowGraph(false);
+      setError("");
       setImage(input);
       setData(null);
-      setShowGraph(false);
 
       try {
          const opts = {
@@ -103,6 +103,7 @@ function App() {
          const formData = new FormData();
          formData.append('img', file[0]);
 
+         console.log("FORM DATA: ", formData);
          const response = await fetch('http://127.0.0.1:5000/process_image_file', {
             method: 'POST',
             body: formData,
@@ -177,19 +178,18 @@ function App() {
                   <Button className='bg-lime-100 text-slate-900' onClick={(event) => handleSubmit(event)}>Submit File</Button>
                </section>
 
-               {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="550" height="350" /> : null}
+               {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="750" height="550" /> : null}
 
                <PacmanLoader className='w-full' color='#65A30D' loading={loading} />
-               {/* GraphComponent is only rendered when showGraph is true */}
-               {showGraph && data && data.issues && (
-                  <GraphComponent issues={data.issues} type={data.type} />
-               )}
             </div>
 
             {data ? (
 
-               <div className='p-4 mr-14 w-3/4 bg-lime-100 rounded-md' >
-                  {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
+               <div className='p-4 mr-14 w-3/4 bg-lime-100 rounded-md max-w-7xl border border-md border-lime-950 shadow-lg' >
+                  <div className='flex flex-row w-full justify-between'>
+                     {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
+                     <Button className='bg-red-200 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
+                  </div>
                   <ul>
                      {data && data.issues.map((item) => (
                         <li className='pb-5' key={item.name}>
@@ -200,26 +200,16 @@ function App() {
                         </li>
                      ))}
                      {data ? (
-                        <div>
-                           <Button className='bg-lime-100 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
-                           <Button className='bg-lime-100 text-slate-900' onClick={(event) => {
-                              if (file === null) {
-                                 getGeminiResponse(input);
-                              } else if (input === "") {
-                                 handleSubmit(event);
-                              }
-                           }}>
-                              Retry
-                           </Button>
-                           {data.issues.length > 1 ? (
-                              <Button className='bg-lime-100 text-slate-900' onClick={(event) => showHideGraph(event)}>Show Graph</Button>
-                           ) : null}
-                        </div>
+                        <Button className='bg-lime-300 text-slate-900 mt-5' onClick={(event) => showHideGraph(event)}>Show Graph</Button>
                      ) : null}
                   </ul>
                </div>
             ) : null}
          </div>
+         {/* GraphComponent is only rendered when showGraph is true */}
+         {showGraph && data && data.issues && (
+            <GraphComponent issues={data.issues} type={data.type} />
+         )}
       </>
    );
 }
