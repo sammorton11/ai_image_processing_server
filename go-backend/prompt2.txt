@@ -1,4 +1,4 @@
-Main Prompt - DONT BE LAZY:
+Main Prompt - DONT BE LAZY - IMPORTANT!!! DO NOT COPY THE EXAMPLES WORD FOR WORD - Please use your OWN WORDS and ANALYSIS DO NOT COPY TEXT FROM EXAMPLES!!!:
 Detect and describe any plant deficiencies in the given image. Please provide information in the following format:
 
 Plant type title: [Plant Type or Unknown - ONLY ADD ONE PLANT TYPE PER RESPONSE - Make sure to add a blank line between the plant type and issues - do not add plant types to the Issues - the plant type is on the first line and there is only ONE for the whole response that you will give. If there are two plants in one image.. you will skip all plant types except the first one. WHATEVER YOU DO DO NOT ADD TWO PLANT TYPES TO THE RESPONSE.. Lets say there is a tomato plant and a strawberry plant.. you will COMBINE THE TWO into one line at the top.]
@@ -15,7 +15,7 @@ Percentage: [Percentage or likeliness of the deficiency or 50.0 if the Issue is 
 
 
 
-Below are some examples for your reference - do not copy and do not leave parts of this format out. If you dont have a response for a specific line e.g the Plant Type line (the first line of every response) just put UNKNOWN. Except for percentages. Do not put the plant type, description + suggestion, or the percentages on the same lines. all of those must be separated.
+Below are some examples for your reference - do not copy and do not leave parts of this format out. If you dont have a response for a specific line e.g the Plant Type line (the first line of every response) just put UNKNOWN. Except for percentages. Do not put the plant type, description + suggestion, or the percentages on the same lines. all of those must be separated. DO NOT COPY TEXT FROM EXAMPLES!!! 
 
 IMPORTANT -- THIS IS JUST AN EXAMPLE -- MUST INCLUDE SPACES INBETWEEN plant type, issue, issue description, and percentage (very important) -- Please follow this exact format for each response but DO NOT COPY ANY INFO OR TEXT IN THIS EXAMPLE be original - Remember, this is just an example. --
 
@@ -79,3 +79,64 @@ Strawberry Plant Leaf Scorch
 The strawberry plant leaves have brown spots, which is a common problem caused by a nutrient deficiency. The most likely cause is a magnesium deficiency. Magnesium is an important nutrient for strawberries, as it helps to produce chlorophyll, which is the green pigment that gives plants their color. When a strawberry plant is deficient in magnesium, it can cause the leaves to turn brown and develop brown spots. To correct this deficiency, you can add a magnesium-rich fertilizer to the soil or use a magnesium spray.
 
 70%
+
+
+
+--------
+[EXAMPLE OF INCORRECT FORMAT]:
+[Possible causes should be formatted as actual Issues. Example of incorrect format:]
+
+Unknown
+
+The leaves of your sweet potato plant have developed yellow spots, and you are not sure what is causing the problem. There are a number of possible causes, including nutrient deficiencies, fungal infections, and insect damage. To determine the cause of the problem, you should take a sample of the leaves to your local agricultural extension office. They will be able to help you identify the problem and recommend a solution.
+
+Probability: 50.0%
+
+
+[DONT DO THAT. Instead of including the possible causes in an Unknown issue description, separate them into issues for the issues list.]
+
+
+[DO NOT REPEAT ISSUES - DO NOT USE VAGUE ISSUE TITLES e.g. "Nutrient Deficiency" - SEPARATE OUT POSSIBLE CAUSES INTO ISSUES]
+[INCORRECT Example below - DO NOT REPEAT ISSUE TITLES! DO NOT COPY TEXT FROM EXAMPLES!!!]
+
+Nutrient Deficiency
+
+The leaves of your hydrangea plant have developed yellow spots, and you are not sure what is causing the problem. There are a number of possible causes, including nutrient deficiencies, fungal infections, and insect damage. To determine the cause of the problem, you should take a sample of the leaves to your local agricultural extension office. They will be able to help you identify the problem and recommend a solution.
+
+50.0%
+
+
+Nutrient Deficiency
+
+The leaves of your hydrangea plant have developed brown spots, and you are not sure what is causing the problem. There are a number of possible causes, including nutrient deficiencies, fungal infections, and insect damage. To determine the cause of the problem, you should take a sample of the leaves to your local agricultural extension office. They will be able to help you identify the problem and recommend a solution.
+
+50.0%
+
+
+Nutrient Deficiency
+
+The leaves of your hydrangea plant have developed purple spots, and you are not sure what is causing the problem. There are a number of possible causes, including nutrient deficiencies, fungal infections, and insect damage. To determine the cause of the problem, you should take a sample of the leaves to your local agricultural extension office. They will be able to help you identify the problem and recommend a solution.
+
+50.0%
+
+
+[Instead of doing that - Separate the possible causes into ISSUES - *IMPORTANT* THESE ARE JUST EXAMPLES DO NOT COPY THEM]:
+
+Nutrient Deficiency
+
+[INSERT ISSUE DESCRIPTION HERE]
+
+83.0%
+
+Fungal Infections
+
+[INSERT ISSUE DESCRIPTION HERE]
+
+42.8%
+
+Insect Damage
+
+[INSERT ISSUE DESCRIPTION HERE]
+
+24.3%
+

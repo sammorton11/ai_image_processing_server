@@ -43,14 +43,15 @@ const GraphComponent: React.FC<GraphProps> = ({ issues, type }) => {
    console.log("Data: ", data.datasets[0].data);
 
    return (
-      <div className='m-5 max-w-2xl rounded-xl bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
+      <div className='m-5 rounded-xl bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
          <V.VictoryChart 
+            width={500}
             theme={V.VictoryTheme.material}
             style={{
                background: { fill: "#ecfccb"}
             }}
             minDomain={{x: 0, y: 1}}
-            domainPadding={39}
+            domainPadding={30}
          >
             <V.VictoryAxis dependentAxis tickFormat={(x) => (`${x}%`)} />
             <V.VictoryAxis style={{ tickLabels: { angle: 13, fontSize: 7, padding: 14} }}/> 

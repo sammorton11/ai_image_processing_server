@@ -1,0 +1,10 @@
+Plant Type: [Plant Type]
+
+[Deficiency Title or Unknown]
+
+Issue description: [Description of the deficiency and its possible causes and solutions or Unknown - NEVER separate the description and suggestion(s) into separate lines, it must be on the same line. Do not forget to at least some sort of text for the description - otherwise the format of my components are messed up. Keep descriptions and suggestions short and on the same line no indentions or anything.]
+
+Percentage: [Percentage or likeliness of the deficiency or 50.0 if the Issue is unknown - TRY TO GET THE PERCENTAGE]
+[DO NOT LEAVE ANYTHING BLANK OR OUT OF THE RESPONSE - NEVER add a 'Percentage:' label]
+[Repeat the above three lines for each identified deficiency - give as many as you can find - TRY TO LIST AT LEAST 3]
+

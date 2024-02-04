@@ -16,13 +16,17 @@ import (
 	"google.golang.org/api/option"
 )
 
+const (
+   maxFileSize = 80 << 20
+   uploadDir = "uploads"
+   tempFileFmt = "uploaded-*.jpg"
+)
+
 func main() {
    mux := http.NewServeMux()
-   // Create a CORS handler with default options
    handler := cors.AllowAll().Handler(mux)
 
-
-   // Add your existing route
+   // Routes
    mux.HandleFunc("/process_image_url", processImageHandler)
    mux.HandleFunc("/process_image_file", processFileHandler)
 
@@ -37,6 +41,8 @@ func main() {
 
 
 func processImageHandler(w http.ResponseWriter, r *http.Request) {
+   ctx := context.Background()
+
    // Read the request body
    body, err := io.ReadAll(r.Body)
    if err != nil {
@@ -62,7 +68,7 @@ func processImageHandler(w http.ResponseWriter, r *http.Request) {
    }
 
    // Call your function with the image file path
-   result, err := sendImageURL(imageFilePath)
+   result, err := sendImageURL(imageFilePath, ctx)
    if err != nil {
      http.Error(w, "Internal Server Error", http.StatusInternalServerError)
      return
@@ -83,9 +89,12 @@ func processImageHandler(w http.ResponseWriter, r *http.Request) {
 
 
 
+
 func processFileHandler(w http.ResponseWriter, r *http.Request) {
+   ctx := context.Background()
+
    // Parse the form data, including the uploaded file
-   err := r.ParseMultipartForm(80 << 20) // 10 MB limit for the file size
+   err := r.ParseMultipartForm(maxFileSize) // 10 MB limit for the file size
    if err != nil {
       fmt.Println(err.Error())
       http.Error(w, "Failed to parse form: "+err.Error(), http.StatusBadRequest)
@@ -108,7 +117,7 @@ func processFileHandler(w http.ResponseWriter, r *http.Request) {
       return
    }
 
-   result, err := sendImageFile(pathName)
+   result, err := sendImageFile(pathName, ctx)
    if err != nil {
       http.Error(w, "Failed to send file to api - Internal Server Error: "+err.Error(), http.StatusInternalServerError)
       return
@@ -149,28 +158,14 @@ func readImageURL(url string) ([]byte, error) {
 }
 
 
-
-func sendImageURL(pathToImage string) (string, error) {
-   ctx := context.Background()
-
-	// Access your API key as an environment variable (see "Set up your API key" above)
-	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Close()
-
-	// For text-and-image input (multimodal), use the gemini-pro-vision model
-	model := client.GenerativeModel("gemini-pro-vision")
-
-   // Read image from URL
-   imageBytes, err := readImageURL(pathToImage)
+func getAIResponse(ctx context.Context, imageBytes []byte) (string, error) {
+   // For text-and-image input (multimodal), use the gemini-pro-vision model
+	model, err := getModel(ctx) 
    if err != nil {
-       log.Fatal(err)
+      return "", fmt.Errorf("Error getting AI model %w", err)
    }
+
    promptTxt := readPromptTxt()
-
-
    prompt := []genai.Part{
      genai.ImageData("jpeg", imageBytes),
      genai.Text(promptTxt),
@@ -191,50 +186,52 @@ func sendImageURL(pathToImage string) (string, error) {
    }
 
    return "", nil
+
 }
 
 
-func sendImageFile(pathToImage string) (string, error) {
-	ctx := context.Background()
+func sendImageURL(pathToImage string, ctx context.Context) (string, error) {
+   imageBytes, err := readImageURL(pathToImage)
+   if err != nil {
+       log.Fatal(err)
+   }
+   resp, err := getAIResponse(ctx, imageBytes)
+   if err != nil {
+      return "", err
+   }
 
+   return resp, nil
+}
+
+func getModel(ctx context.Context) (*genai.GenerativeModel, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
 	if err != nil {
-		return "", fmt.Errorf("failed to create AI client: %w", err)
+		return nil, fmt.Errorf("failed to create AI client: %w", err)
 	}
 	defer client.Close()
 
 	model := client.GenerativeModel("gemini-pro-vision")
 
+   return model, nil
+}
+
+func sendImageFile(pathToImage string, ctx context.Context) (string, error) {
+	model, err := getModel(ctx)
+   if err != nil {
+      return "", fmt.Errorf("Failed to use AI model %w", err)
+   }
+
 	imageBytes, err := os.ReadFile(pathToImage)
 	if err != nil {
 		return "", fmt.Errorf("failed to read image file: %w", err)
 	}
-	promptTxt := readPromptTxt()
 
-	prompt := []genai.Part{
-		genai.ImageData("jpeg", imageBytes),
-		genai.Text(promptTxt),
-	}
-	resp, err := model.GenerateContent(ctx, prompt...)
-	if err != nil {
-		return "", fmt.Errorf("failed to generate content: %w", err)
-	}
+   resp, err := getAIResponse(ctx, imageBytes)
+   if err != nil {
+      return "", err
+   }
 
-	parts := resp.Candidates[0].Content.Parts
-
-	for _, part := range parts {
-		switch concretePart := part.(type) {
-         case genai.Text:
-            partStr := string(concretePart)
-            return partStr, nil
-         case genai.Blob:
-            return "", nil
-         default:
-            fmt.Println("Idk man")
-		}
-	}
-
-	return "", nil
+   return resp, nil
 }
 
 
@@ -251,56 +248,12 @@ func readPromptTxt() string {
    return text
 }
 
-
-// Process the response string from the LLM API into a dictionary to send as JSON
-func stringToMap2(responseString string) map[string]interface{} {
-	// Split the response by empty lines
-	splitString := strings.Split(strings.TrimSpace(responseString), "\n\n")
-	entries := make([]string, len(splitString))
-	for i := range splitString {
-		entries[i] = strings.TrimSpace(splitString[i])
-	}
-
-	// Create a map to store the result
-	data := make(map[string]interface{})
-
-	// Add the "type" field to the map
-	data["type"] = entries[0]
-
-	// Add the "issues" field to the map as a slice
-	data["issues"] = make([]map[string]interface{}, 0)
-
-	// Iterate over entries starting from the second entry
-	for i := 1; i < len(entries); i += 3 {
-		deficiencyName := entries[i]
-		description := entries[i+1]
-		percent := entries[i+2]
-
-		// Add a map for each issue to the "issues" slice
-		issue := map[string]interface{}{
-			"name":        deficiencyName,
-			"description": description,
-			"percent":     percent,
-		}
-
-		data["issues"] = append(data["issues"].([]map[string]interface{}), issue)
-	}
-
-   fmt.Println(data)
-
-	return data
-}
-
-
-
-// PlantIssue represents an individual issue in the plant data
 type PlantIssue struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Percent     string `json:"percent"`
 }
 
-// PlantData represents the entire plant data
 type PlantData struct {
 	Type   string        `json:"type"`
 	Issues []PlantIssue `json:"issues"`
@@ -313,27 +266,21 @@ func stringToMap(responseString string) PlantData {
 	for i := range splitString {
 		entries[i] = strings.TrimSpace(splitString[i])
 	}
-
-	// Create a PlantData instance
-	data := PlantData{
+		data := PlantData{
 		Type:   entries[0],
 		Issues: make([]PlantIssue, 0),
 	}
 
-	// Iterate over entries starting from the second entry
-	iterEnt := iter(entries[1:]) // Skip the first entry
+	iterEnt := iter(entries[1:])
 	for {
-		// Check if there are enough entries to process
 		if len(iterEnt) < 3 {
 			break
 		}
 
-		// Extract values from the iterator
 		deficiencyName := <-iterEnt
 		description := <-iterEnt
 		percent := <-iterEnt
 
-		// Add a PlantIssue to the "issues" slice
 		issue := PlantIssue{
 			Name:        deficiencyName,
 			Description: description,
@@ -374,7 +321,7 @@ func fileTransfer(w http.ResponseWriter, r *http.Request, file multipart.File) (
    }
 
    // Create a temporary file in the "uploads" directory
-   tempFile, err := os.CreateTemp("uploads", "uploaded-*.jpg")
+   tempFile, err := os.CreateTemp(uploadDir, tempFileFmt)
    if err != nil {
       http.Error(w, "Failed to create temporary file: "+err.Error(), http.StatusInternalServerError)
       return "", err

@@ -3,6 +3,9 @@ import { Button } from './components/ui/button';
 import { PacmanLoader } from 'react-spinners';
 import GraphComponent from './components/GraphComponent';
 import { Data } from 'victory';
+import  placeholderImage from './assets/calcium-for-plants.jpg';
+import PieChartComponent from './components/PieChart';
+import LineChartComponent from './components/LineChart';
 
 interface Data {
    type: string;
@@ -43,7 +46,7 @@ function App() {
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState("");
    const [file, setFile] = useState<FileList | null>(null);
-   const [image, setImage] = useState("");
+   const [image, setImage] = useState(placeholderImage);
    const [showGraph, setShowGraph] = useState(false);
 
    function showHideGraph(e: React.MouseEvent<HTMLButtonElement>) {
@@ -206,9 +209,12 @@ function App() {
                </div>
             ) : null}
          </div>
-         {/* GraphComponent is only rendered when showGraph is true */}
          {showGraph && data && data.issues && (
-            <GraphComponent issues={data.issues} type={data.type} />
+            <div className='flex flex-row w-full py-10'>
+               <GraphComponent issues={data.issues} type={data.type} />
+               <PieChartComponent issues={data.issues} type={data.type}/>
+               <LineChartComponent issues={data.issues} type={data.type} />
+            </div>
          )}
       </>
    );
