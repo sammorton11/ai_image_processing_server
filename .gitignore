@@ -31,5 +31,8 @@ yarn-error.log
 # dotenv environment variable file
 .env
 
+# images from uploading files
+/go-backend/uploads/
+
 # macOS specific files
 .DS_Store

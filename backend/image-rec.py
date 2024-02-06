@@ -131,15 +131,8 @@ def process_image_url():
 def process_image_file():
     try:
         img_file = request.files['img']
-        print("IMAGE FILE:")
-        print(img_file)
         img = read_image(img_file)
-        print("IMAGE:")
-        print(img)
-
         response_text = send_image_file(img)
-        print(response_text)
-
         return response_text
 
     except Exception as e:

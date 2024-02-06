@@ -30,7 +30,6 @@ func main() {
    mux.HandleFunc("/process_image_url", processImageHandler)
    mux.HandleFunc("/process_image_file", processFileHandler)
 
-
    port := 5000
    addr := fmt.Sprintf(":%d", port)
    fmt.Printf("Server is running on http://localhost%s\n", addr)
@@ -38,10 +37,7 @@ func main() {
 }
 
 
-
-
 func processImageHandler(w http.ResponseWriter, r *http.Request) {
-   ctx := context.Background()
 
    // Read the request body
    body, err := io.ReadAll(r.Body)
@@ -68,12 +64,11 @@ func processImageHandler(w http.ResponseWriter, r *http.Request) {
    }
 
    // Call your function with the image file path
-   result, err := sendImageURL(imageFilePath, ctx)
+   result, err := sendImageURL(imageFilePath)
    if err != nil {
      http.Error(w, "Internal Server Error", http.StatusInternalServerError)
      return
    }
-   fmt.Println(result)
    strMap := stringToMap(result)
 
    // Marshal the map to JSON
@@ -88,11 +83,7 @@ func processImageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-
-
 func processFileHandler(w http.ResponseWriter, r *http.Request) {
-   ctx := context.Background()
-
    // Parse the form data, including the uploaded file
    err := r.ParseMultipartForm(maxFileSize) // 10 MB limit for the file size
    if err != nil {
@@ -117,7 +108,9 @@ func processFileHandler(w http.ResponseWriter, r *http.Request) {
       return
    }
 
-   result, err := sendImageFile(pathName, ctx)
+   fmt.Printf("\n%s\n", pathName)
+
+   result, err := sendImageFile(pathName)
    if err != nil {
       http.Error(w, "Failed to send file to api - Internal Server Error: "+err.Error(), http.StatusInternalServerError)
       return
@@ -137,18 +130,13 @@ func processFileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 
-
-
-// ReadImageURL reads an image from a URL and resizes it if needed
 func readImageURL(url string) ([]byte, error) {
-	// Make an HTTP request to get the image
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make HTTP request: %w", err)
 	}
 	defer resp.Body.Close()
 
-	// Read the image data from the response body
 	imageBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read image from response body: %w", err)
@@ -158,11 +146,21 @@ func readImageURL(url string) ([]byte, error) {
 }
 
 
-func getAIResponse(ctx context.Context, imageBytes []byte) (string, error) {
+
+func sendImageURL(pathToImage string) (string, error) {
+   ctx := context.Background()
    // For text-and-image input (multimodal), use the gemini-pro-vision model
-	model, err := getModel(ctx) 
+	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
    if err != nil {
-      return "", fmt.Errorf("Error getting AI model %w", err)
+      return "", fmt.Errorf("failed to create AI client: %w", err)
+   }
+   defer client.Close()
+
+   model := client.GenerativeModel("gemini-pro-vision")
+
+   imageBytes, err := readImageURL(pathToImage)
+   if err != nil {
+       log.Fatal(err)
    }
 
    promptTxt := readPromptTxt()
@@ -171,6 +169,54 @@ func getAIResponse(ctx context.Context, imageBytes []byte) (string, error) {
      genai.Text(promptTxt),
    }
    resp, err := model.GenerateContent(ctx, prompt...)
+   fmt.Println(resp)
+
+   parts := resp.Candidates[0].Content.Parts
+   for _, part := range parts {
+      switch concretePart := part.(type) {
+         case genai.Text:
+         partStr := string(concretePart)
+            return partStr, nil
+         case genai.Blob:
+           return "", nil
+         default:
+            return "", nil
+      }
+   }
+
+   return "", nil
+}
+
+
+func sendImageFile(pathToImage string) (string, error) {
+   ctx := context.Background()
+   // For text-and-image input (multimodal), use the gemini-pro-vision model
+	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
+   if err != nil {
+      return "", fmt.Errorf("failed to create AI client: %w", err)
+   }
+   defer client.Close()
+   model := client.GenerativeModel("gemini-pro-vision")
+
+   imageBytes, err := os.ReadFile(pathToImage)
+   if err != nil {
+       log.Fatal(err)
+   }
+   
+   promptTxt := readPromptTxt()
+   prompt := []genai.Part{
+     genai.ImageData("jpeg", imageBytes),
+     genai.Text(promptTxt),
+   }
+
+   resp, err := model.GenerateContent(ctx, prompt...)
+   if err != nil {
+      return "", fmt.Errorf("error generating content: %w", err)
+   }
+
+   if resp == nil {
+      return "", fmt.Errorf("unexpected nil response from model.GenerateContent")
+   }
 
    parts := resp.Candidates[0].Content.Parts
    for _, part := range parts {
@@ -186,52 +232,6 @@ func getAIResponse(ctx context.Context, imageBytes []byte) (string, error) {
    }
 
    return "", nil
-
-}
-
-
-func sendImageURL(pathToImage string, ctx context.Context) (string, error) {
-   imageBytes, err := readImageURL(pathToImage)
-   if err != nil {
-       log.Fatal(err)
-   }
-   resp, err := getAIResponse(ctx, imageBytes)
-   if err != nil {
-      return "", err
-   }
-
-   return resp, nil
-}
-
-func getModel(ctx context.Context) (*genai.GenerativeModel, error) {
-	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create AI client: %w", err)
-	}
-	defer client.Close()
-
-	model := client.GenerativeModel("gemini-pro-vision")
-
-   return model, nil
-}
-
-func sendImageFile(pathToImage string, ctx context.Context) (string, error) {
-	model, err := getModel(ctx)
-   if err != nil {
-      return "", fmt.Errorf("Failed to use AI model %w", err)
-   }
-
-	imageBytes, err := os.ReadFile(pathToImage)
-	if err != nil {
-		return "", fmt.Errorf("failed to read image file: %w", err)
-	}
-
-   resp, err := getAIResponse(ctx, imageBytes)
-   if err != nil {
-      return "", err
-   }
-
-   return resp, nil
 }
 
 
@@ -266,20 +266,20 @@ func stringToMap(responseString string) PlantData {
 	for i := range splitString {
 		entries[i] = strings.TrimSpace(splitString[i])
 	}
-		data := PlantData{
+	data := PlantData{
 		Type:   entries[0],
 		Issues: make([]PlantIssue, 0),
 	}
 
-	iterEnt := iter(entries[1:])
+	entryIter := iter(entries[1:])  // start from one because we already grabbed the first line
 	for {
-		if len(iterEnt) < 3 {
+		if len(entryIter) < 3 {
 			break
 		}
 
-		deficiencyName := <-iterEnt
-		description := <-iterEnt
-		percent := <-iterEnt
+		deficiencyName := <-entryIter
+		description := <-entryIter
+		percent := <-entryIter
 
 		issue := PlantIssue{
 			Name:        deficiencyName,
@@ -308,29 +308,36 @@ func fileTransfer(w http.ResponseWriter, r *http.Request, file multipart.File) (
    // Read the file data
    fileBytes, err := io.ReadAll(file)
    if err != nil {
-      fmt.Println(err.Error())
-      http.Error(w, "Failed to read file: "+err.Error(), http.StatusInternalServerError)
+      errMsg := "Failed to read file: " + err.Error()
+      fmt.Println(errMsg)
+      http.Error(w, errMsg, http.StatusInternalServerError)
       return "", err
    }
 
    // Ensure the "uploads" directory exists
-   err_ := os.MkdirAll("uploads", 0755)
-   if err_ != nil {
-      http.Error(w, "Failed to create 'uploads' directory: "+err.Error(), http.StatusInternalServerError)
+   if err := os.MkdirAll(uploadDir, 0755); err != nil {
+      errMsg := "Failed to create 'uploads' directory: " + err.Error()
+      fmt.Println(errMsg)
+      http.Error(w, errMsg, http.StatusInternalServerError)
       return "", err
    }
 
    // Create a temporary file in the "uploads" directory
    tempFile, err := os.CreateTemp(uploadDir, tempFileFmt)
    if err != nil {
-      http.Error(w, "Failed to create temporary file: "+err.Error(), http.StatusInternalServerError)
+      errMsg := "Failed to create temporary file: " + err.Error()
+      fmt.Println(errMsg)
+      http.Error(w, errMsg, http.StatusInternalServerError)
       return "", err
    }
    defer tempFile.Close()
 
+   // Write the file data to the temporary file
    _, err = tempFile.Write(fileBytes)
    if err != nil {
-      http.Error(w, "Failed to write to temporary file: "+err.Error(), http.StatusInternalServerError)
+      errMsg := "Failed to write to temporary file: " + err.Error()
+      fmt.Println(errMsg)
+      http.Error(w, errMsg, http.StatusInternalServerError)
       return "", err
    }
 
