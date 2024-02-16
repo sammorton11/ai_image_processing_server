@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/google/generative-ai-go/genai"
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 	"google.golang.org/api/option"
 )
@@ -22,15 +23,21 @@ const (
    tempFileFmt = "uploaded-*.jpg"
 )
 
+
 func main() {
    mux := http.NewServeMux()
    handler := cors.AllowAll().Handler(mux)
+
+   err := godotenv.Load()
+      if err != nil {
+      log.Fatal("Error loading .env file")
+   }
 
    // Routes
    mux.HandleFunc("/process_image_url", processImageHandler)
    mux.HandleFunc("/process_image_file", processFileHandler)
 
-   port := 5000
+   port := 5001
    addr := fmt.Sprintf(":%d", port)
    fmt.Printf("Server is running on http://localhost%s\n", addr)
    log.Fatal(http.ListenAndServe(addr, handler))
@@ -108,8 +115,6 @@ func processFileHandler(w http.ResponseWriter, r *http.Request) {
       return
    }
 
-   fmt.Printf("\n%s\n", pathName)
-
    result, err := sendImageFile(pathName)
    if err != nil {
       http.Error(w, "Failed to send file to api - Internal Server Error: "+err.Error(), http.StatusInternalServerError)
@@ -146,11 +151,11 @@ func readImageURL(url string) ([]byte, error) {
 }
 
 
-
 func sendImageURL(pathToImage string) (string, error) {
+   api_key := os.Getenv("API_KEY")
    ctx := context.Background()
-   // For text-and-image input (multimodal), use the gemini-pro-vision model
-	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
+
+	client, err := genai.NewClient(ctx, option.WithAPIKey(api_key))
    if err != nil {
       return "", fmt.Errorf("failed to create AI client: %w", err)
    }
@@ -189,19 +194,24 @@ func sendImageURL(pathToImage string) (string, error) {
 
 
 func sendImageFile(pathToImage string) (string, error) {
+   api_key := os.Getenv("API_KEY")
    ctx := context.Background()
+
    // For text-and-image input (multimodal), use the gemini-pro-vision model
-	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyBJPw1CZn5bUXyb309NcteN1mov6KkNCNw"))
+	client, err := genai.NewClient(ctx, option.WithAPIKey(api_key))
    if err != nil {
       return "", fmt.Errorf("failed to create AI client: %w", err)
    }
    defer client.Close()
    model := client.GenerativeModel("gemini-pro-vision")
+   fmt.Println("Made it to here!")
 
    imageBytes, err := os.ReadFile(pathToImage)
    if err != nil {
        log.Fatal(err)
    }
+
+   fmt.Println("readPromptTxt")
    
    promptTxt := readPromptTxt()
    prompt := []genai.Part{
@@ -213,6 +223,7 @@ func sendImageFile(pathToImage string) (string, error) {
    if err != nil {
       return "", fmt.Errorf("error generating content: %w", err)
    }
+   fmt.Println("resp: HELP")
 
    if resp == nil {
       return "", fmt.Errorf("unexpected nil response from model.GenerateContent")
@@ -237,7 +248,7 @@ func sendImageFile(pathToImage string) (string, error) {
 
 
 func readPromptTxt() string {
-   path := "/home/sammorton/Projects/ai_image_processing_server/go-backend/prompt2.txt" 
+   path := "prompt3.txt" 
    content, err := os.ReadFile(path)
    if err != nil {
       log.Fatal(err)

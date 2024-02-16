@@ -97,23 +97,24 @@ Probability: 50.0%
 
 
 [DO NOT REPEAT ISSUES - DO NOT USE VAGUE ISSUE TITLES e.g. "Nutrient Deficiency" - SEPARATE OUT POSSIBLE CAUSES INTO ISSUES - "Magnesium Deficiency", "Potassium Deficiency, "Phosphorus Deficiency" etc.]
+[ANYTHING IN []'s IS JUST A NOTE FOR YOU AND SHOULD NOT BE INCLUDED IN THE RESPONSES]
 [INCORRECT Example below - DO NOT REPEAT ISSUE TITLES! DO NOT COPY TEXT FROM EXAMPLES!]:
 
-Nutrient Deficiency
+Nutrient Deficiency [Do not put this put Magnesium deficiency since that is what you are talking about in the description]
 
 The leaves of your hydrangea plant have developed yellow spots, which is a common problem caused by a magnesium deficiency. Magnesium is an important nutrient for hydrangeas, as it helps to produce chlorophyll, which is the green pigment that gives plants their color. When a hydrangea plant is deficient in magnesium, it can cause the leaves to turn yellow and develop yellow spots. To correct this deficiency, you can add a magnesium-rich fertilizer to the soil or use a magnesium spray.
 
 80%
 
 
-Nutrient Deficiency
+Nutrient Deficiency [Do not put this put Potassium deficiency since that is what you are talking about in the description]
 
 The leaves of your hydrangea plant have developed brown spots, which is a common problem caused by a potassium deficiency. Potassium is an important nutrient for hydrangeas, as it helps to regulate water uptake and transport nutrients throughout the plant. When a hydrangea plant is deficient in potassium, it can cause the leaves to turn brown and develop brown spots. To correct this deficiency, you can add a potassium-rich fertilizer to the soil or use a potassium spray.
 
 70%
 
 
-Nutrient Deficiency
+Nutrient Deficiency [Do not put this put Phosphorus deficiency since that is what you are talking about in the description]
 
 The leaves of your hydrangea plant have developed purple spots, which is a common problem caused by a phosphorus deficiency. Phosphorus is an important nutrient for hydrangeas, as it helps to promote root growth and flowering. When a hydrangea plant is deficient in phosphorus, it can cause the leaves to turn purple and develop purple spots. To correct this deficiency, you can add a phosphorus-rich fertilizer to the soil or use a phosphorus spray.
 

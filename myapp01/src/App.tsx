@@ -71,7 +71,7 @@ function App() {
                image_url: input
             })
          };
-         const response = await fetch('http://127.0.0.1:5000/process_image_url', opts);
+         const response = await fetch('http://127.0.0.1:5001/process_image_url', opts);
 
          if (!response.ok) {
             throw new Error("Something went wrong");
@@ -107,7 +107,7 @@ function App() {
          formData.append('img', file[0]);
 
          console.log("FORM DATA: ", formData);
-         const response = await fetch('http://127.0.0.1:5000/process_image_file', {
+         const response = await fetch('http://localhost:5001/process_image_file', {
             method: 'POST',
             body: formData,
          });

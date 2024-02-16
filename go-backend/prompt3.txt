@@ -1,10 +1,76 @@
-Plant Type: [Plant Type]
+Main Prompt:
 
-[Deficiency Title or Unknown]
+Detect and describe any plant deficiencies in the provided image. Please adhere to the specified format for clarity and coherence:
 
-Issue description: [Description of the deficiency and its possible causes and solutions or Unknown - NEVER separate the description and suggestion(s) into separate lines, it must be on the same line. Do not forget to at least some sort of text for the description - otherwise the format of my components are messed up. Keep descriptions and suggestions short and on the same line no indentions or anything.]
+Plant type title: [Plant Type or Unknown - Only one plant type per response. Maintain a clear separation between plant type and issues. If multiple plants are depicted, merge them into a single line at the top.]
 
-Percentage: [Percentage or likeliness of the deficiency or 50.0 if the Issue is unknown - TRY TO GET THE PERCENTAGE]
-[DO NOT LEAVE ANYTHING BLANK OR OUT OF THE RESPONSE - NEVER add a 'Percentage:' label]
-[Repeat the above three lines for each identified deficiency - give as many as you can find - TRY TO LIST AT LEAST 3]
+Here begins the deficiency list: [Deficiency Title or Unknown]
 
+Issue description: [Describe the deficiency, its potential causes, and recommended solutions succinctly. Keep descriptions and suggestions on a single line without indentation.]
+
+[Indicate the likelihood or percentage of the deficiency, assigning 50.0 if the issue is unknown. Avoid labeling with 'Percentage'.]
+
+[Do not omit any sections. Maintain consistency in format for each identified deficiency, striving to list a minimum of three.]
+
+[Examples provided below. Do not copy.]
+
+Poinsettia
+
+Potassium Deficiency
+
+This deficiency is common in poinsettias, especially when they lack adequate fertilizer. Symptoms include yellowing and browning of leaves, which may eventually fall off. To rectify this issue, consider fertilizing your plant with a potassium-rich fertilizer.
+
+10%
+
+Calcium Deficiency
+
+Poinsettias suffering from calcium deficiency often display symptoms such as distorted or necrotic leaf margins. To address this issue, incorporate a calcium-rich fertilizer into your routine. Additionally, ensure optimal soil pH for better nutrient uptake.
+
+20%
+
+Magnesium Deficiency
+
+Yellowing between the veins of older leaves may indicate magnesium deficiency in poinsettias. To remedy this, add a magnesium-containing fertilizer to your watering routine to promote healthier foliage.
+
+10%
+
+Iron Deficiency
+
+If younger leaves turn yellow while veins remain green, it could signal an iron deficiency. Introduce an iron supplement or adjust soil pH for better iron availability to restore vibrant green color to leaves.
+
+80%
+
+Overwatering
+
+Overwatering can lead to yellowing and wilting of poinsettia leaves. To mitigate this issue, reduce watering frequency.
+
+60%
+
+[Tomato Plant Blossom End Rot example:]
+
+Tomato Plant
+Blossom End Rot
+
+Probability: The tomatoes on your tomato plant are developing blossom end rot, commonly caused by calcium deficiency. Ensure sufficient calcium intake through fertilization or sprays to prevent this issue.
+
+[Tomato and Strawberry Plants example:]
+
+Tomato Plant Blossom End Rot
+
+Address blossom end rot in tomatoes by supplying adequate calcium through fertilizer or spray applications.
+
+80%
+
+Strawberry Plant Leaf Scorch
+
+Combat leaf scorch in strawberry plants, likely due to magnesium deficiency, with a magnesium-rich fertilizer or spray regimen.
+
+70%
+
+[Example of incorrect format:]
+
+Unknown
+
+Your sweet potato plant's leaves display yellow spots, possibly due to various factors such as nutrient deficiencies, fungal infections, or insect damage. Seek assistance from your local agricultural extension office for accurate diagnosis and solution recommendations.
+
+Probability: 50.0%
