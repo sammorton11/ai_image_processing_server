@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from './components/ui/button';
 import { PacmanLoader } from 'react-spinners';
 import GraphComponent from './components/GraphComponent';
@@ -6,6 +6,8 @@ import { Data } from 'victory';
 import  placeholderImage from './assets/calcium-for-plants.jpg';
 import PieChartComponent from './components/PieChart';
 import LineChartComponent from './components/LineChart';
+import { ThemeProvider } from './components/theme-provider';
+import { ModeToggle } from './components/mode-toggle';
 
 interface Data {
    type: string;
@@ -47,7 +49,7 @@ function App() {
    const [error, setError] = useState("");
    const [file, setFile] = useState<FileList | null>(null);
    const [image, setImage] = useState(placeholderImage);
-   const [showGraph, setShowGraph] = useState(false);
+   const [showGraph, setShowGraph] = useState(true);
 
    function showHideGraph(e: React.MouseEvent<HTMLButtonElement>) {
       e.preventDefault();
@@ -55,11 +57,10 @@ function App() {
    }
 
    async function getGeminiResponse(input: string) {
+      if (!input || input === "") return;
       setLoading(true);
-      setShowGraph(false);
       setError("");
       setImage(input);
-      setData(null);
 
       try {
          const opts = {
@@ -73,40 +74,33 @@ function App() {
          };
          const response = await fetch('http://127.0.0.1:5001/process_image_url', opts);
 
-         if (!response.ok) {
-            throw new Error("Something went wrong");
-         }
-
-         const responseData = await response.json();
-         if (responseData.error) {
+         if (response.ok) {
+            const responseData = await response.json();
+            if (responseData.error) {
+               setLoading(false);
+               setError(responseData.error);
+               return;
+            }
+            const result = responseData;
             setLoading(false);
-            setError(responseData.error);
-            return;
+            setData(result);
          }
 
-         const result = responseData;
-         console.log("Result: ", result);
-         setLoading(false);
-         setData(result);
-
-         console.log("Data that is set: ", data);
       } catch (error) {
          console.error(error);
          setLoading(false);
       }
    }
 
-   const sendDataToServer = async () => {
-      setError("");
-      setData(null);
-      setLoading(true);
+   async function sendDataToServer() {
       if (!file) return;
+      setError("");
+      setLoading(true);
 
       try {
          const formData = new FormData();
          formData.append('img', file[0]);
 
-         console.log("FORM DATA: ", formData);
          const response = await fetch('http://localhost:5001/process_image_file', {
             method: 'POST',
             body: formData,
@@ -114,7 +108,6 @@ function App() {
 
          if (response.ok) {
             const result = await response.json();
-            console.log(result);
             setLoading(false);
             setData(result);
          } else {
@@ -128,18 +121,15 @@ function App() {
       }
    };
 
-   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+   async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
       event.preventDefault();
       if (!file) {
          return;
       }
 
       const imageObj = URL.createObjectURL(file[0]);
-
       setImage(imageObj);
-      console.log("File: ", imageObj);
-
-      sendDataToServer();
+      await sendDataToServer();
    };
 
    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,67 +146,71 @@ function App() {
          console.log("File not found");
          return;
       }
-      console.log("File: ", value);
+      const imageObj = URL.createObjectURL(value[0]);
       setFile(value);
-      setImage(URL.createObjectURL(value[0]));
+      setImage(imageObj);
    };
 
    return (
-      <>
-         <header className='bg-lime-200/30 p-5 m-2 rounded-md'>
-            <h1 className='text-3xl font-bold text-lime-900'>Plant Deficiency Detection AI</h1>
-            <p className="py-3">Using Gemini API by Google</p>
-         </header>
-         <div className='flex flex-row p-5 text-lime-900 h-full'>
-            <div className='pr-6 w-1/2'>
-               {error ? <p>{error}</p> : null}
-               <label className='mr-5 text-lime-900 font-bold'>Image URL:</label>
-               <input className='border border-1 border-lime-900/40 p-2 w-3/4 bg-lime-900/10 rounded-sm mr-10 text-black' onChange={handleInputChange} placeholder='https://vsesorta.ru/upload/iblock/bdc/737923i-khosta-gibridnaya-hands-up.jpg' />
-               <div className='py-5'>
-                  <input type="file" onChange={handleFileChange} />
-               </div>
-               <section className='flex flex-row w-full justify-start'>
-                  <Button className='bg-lime-100 text-slate-900' onClick={() => getGeminiResponse(input)}>Submit URL</Button>
-                  <div className='px-1' />
-                  <Button className='bg-lime-100 text-slate-900' onClick={(event) => handleSubmit(event)}>Submit File</Button>
+      <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+         <div className='min-h-screen dark:bg-neutral-700 dark:text-lime-100/50 flex flex-col w-full'>
+            <header className='items-center justify-between flex flex-row dark:bg-neutral-800 bg-lime-200/30 p-5 mx-2 my-3 rounded-md'>
+               <section className="flex flex-col">
+                  <h1 className='sm:text-lg lg:text-3xl font-bold text-lime-900 dark:text-lime-200/60'>Plant Deficiency Detection AI</h1>
+                  <p className="text-sm py-1">Using Gemini API by Google</p>
                </section>
-
-               {image ? <img className='my-6 rounded-xl shadow-md' src={image} alt="issue" width="750" height="550" /> : null}
-
-               <PacmanLoader className='w-full' color='#65A30D' loading={loading} />
-            </div>
-
-            {data ? (
-
-               <div className='p-4 mr-14 w-3/4 bg-lime-100 rounded-md max-w-7xl border border-md border-lime-950 shadow-lg' >
-                  <div className='flex flex-row w-full justify-between'>
-                     {data && data.type ? <div className='text-lime-950 text-3xl font-bold pb-4'>Plant Type: {data.type}</div> : null}
-                     <Button className='bg-red-200 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
+               <ModeToggle />
+            </header>
+            <div className='lg:flex lg:flex-row p-5 text-lime-900 h-full w-full justify-between dark:text-lime-200/50'>
+               <div className='flex flex-col pr-5 w-1/2 h-full'>
+                  {error ? <p>{error}</p> : null}
+                  <label className='ml-2 mb-1 dark:text-lime-100/50 text-lime-900 font-bold'>Image URL:</label>
+                  <input className='border border-1 border-lime-900/40 p-2 w-3/4 dark:bg-lime-200/10 light:bg-lime-900/10 rounded-sm mr-10 text-black' onChange={handleInputChange} placeholder='https://vsesorta.ru/upload/iblock/bdc/737923i-khosta-gibridnaya-hands-up.jpg' />
+                  <div className='py-5'>
+                     <input type="file" onChange={handleFileChange} />
                   </div>
-                  <ul>
-                     {data && data.issues.map((item) => (
-                        <li className='pb-5' key={item.name}>
-                           <div className='font-bold text-lg'>{item.name}</div>
-                           <div>{item.description}</div>
-                           <br />
-                           <div>Probability: {item.percent}</div>
-                        </li>
-                     ))}
-                     {data ? (
-                        <Button className='bg-lime-300 text-slate-900 mt-5' onClick={(event) => showHideGraph(event)}>Show Graph</Button>
-                     ) : null}
-                  </ul>
+                  <section className='flex flex-row w-full justify-start'>
+                     <Button className='dark:bg-neutral-800 bg-lime-100 dark:text-lime-100 text-slate-900' onClick={() => getGeminiResponse(input)}>Submit URL</Button>
+                     <div className='px-1' />
+                     <Button className='dark:bg-neutral-800 bg-lime-100 dark:text-lime-100 text-slate-900' onClick={(event) => handleSubmit(event)}>Submit File</Button>
+                  </section>
+
+                  {image ? <img className='my-6 rounded-xl shadow-md max-h-[800px]' src={image} alt="issue" width="695" height="495" /> : null}
+
+                  <PacmanLoader className='w-full' color='#65A30D' loading={loading} />
                </div>
-            ) : null}
-         </div>
-         {showGraph && data && data.issues && (
-            <div className='flex flex-row w-full py-10'>
-               <GraphComponent issues={data.issues} type={data.type} />
-               <PieChartComponent issues={data.issues} type={data.type}/>
-               <LineChartComponent issues={data.issues} type={data.type} />
+
+               {data ? (
+                  <div className='p-4 sm:w-full lg:w-3/4 bg-lime-100 dark:bg-neutral-800 dark:text-lime-100/50 rounded-md lg:max-w-7xl border border-md border-lime-950 shadow-lg align-top' >
+                     <div className='flex flex-row w-full justify-between'>
+                        {data && data.type ? <div className='dark:text-lime-100/60 text-lime-900 sm:text-xl md:text-2xl lg:text-3xl font-bold pb-4'>{data.type}</div> : null}
+                        <Button className='bg-red-200 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
+                     </div>
+                     <ul>
+                        {data && data.issues.map((item) => (
+                           <li className='pb-10' key={item.name}>
+                              <div className='font-bold md:text-md lg:text-xl'>{item.name}</div>
+                              <div className='lg:text-md'>{item.description}</div>
+                              <br />
+                              <div className='lg:text-sm'>Probability: {item.percent}</div>
+                           </li>
+                        ))}
+                        {data ? (
+                           <Button className='bg-lime-300 text-slate-900 mt-5 sm:text-sm lg:text-md' onClick={(event) => showHideGraph(event)}>Graph</Button>
+                        ) : null}
+                     </ul>
+                  </div>
+               ) : null}
             </div>
-         )}
-      </>
+            {showGraph && data && data.issues && (
+               <div className='md:flex flex-row w-full py-10 lg:px-16 justify-between'>
+                  <GraphComponent issues={data.issues} type={data.type} />
+                  <PieChartComponent issues={data.issues} type={data.type} />
+                  <LineChartComponent issues={data.issues} type={data.type} />
+               </div>
+            )}
+         </div>
+      </ThemeProvider>
    );
 }
 
