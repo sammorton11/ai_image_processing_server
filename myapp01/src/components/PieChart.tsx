@@ -21,7 +21,7 @@ const PieChartComponent: React.FC<GraphProps> = ({ issues }) => {
    console.log("Victory Data: ", victData);
 
    return (
-      <div className='m-5 rounded-xl bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
+      <div className='m-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
          <V.VictoryPie
             theme={V.VictoryTheme.material}            
             width={500}

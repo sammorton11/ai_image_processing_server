@@ -1,76 +1,121 @@
-Main Prompt:
+Main Prompt - ATTENTION: PLEASE REFRAIN FROM INACTIVITY - CRUCIAL AVOID MIMICKING THE EXAMPLES! - Kindly utilize YOUR OWN TERMINOLOGY and ASSESSMENTS. COPYING TEXT FROM EXAMPLES is strictly prohibited! CRITICAL:
 
-Detect and describe any plant deficiencies in the provided image. Please adhere to the specified format for clarity and coherence:
+The primary objective is to identify and delineate any plant deficiencies apparent in the given image. Try to identify at least four possible deficiencies. Kindly furnish information in the specified format:
 
-Plant type title: [Plant Type or Unknown - Only one plant type per response. Maintain a clear separation between plant type and issues. If multiple plants are depicted, merge them into a single line at the top.]
+Plant Type Title: [Plant Type or Unknown - SELECT ONLY ONE PLANT TYPE PER RESPONSE - Ensure a clear demarcation between plant types with a vacant line]
 
-Here begins the deficiency list: [Deficiency Title or Unknown]
+The deficiency catalog begins here for emphasis: [Deficiency Title or Unknown]
 
-Issue description: [Describe the deficiency, its potential causes, and recommended solutions succinctly. Keep descriptions and suggestions on a single line without indentation.]
+Issue Description: [Never put 'Nutrient Deficiency' put the actual name of the deficiency. Expound upon the deficiency and its potential origins and resolutions or Unknown - NEVER disengage the description and suggestion(s) into distinct lines. They must align in a single line. It is imperative to include some text for the description - any deviation may disrupt the format of my components. Keep the descriptions and suggestions succinct and on the same line without indentation.]
 
-[Indicate the likelihood or percentage of the deficiency, assigning 50.0 if the issue is unknown. Avoid labeling with 'Percentage'.]
+[Probability or likelihood of the deficiency or 50.0 if the Issue is unknown - Endeavor to incorporate the percentage]
+[DO NOT LEAVE ANY FIELD UNFILLED OR OMITTED - NEVER insert a 'Percentage:' label]
+[Reiterate the aforementioned three lines for each identified deficiency - endeavor to identify at least three]
 
-[Do not omit any sections. Maintain consistency in format for each identified deficiency, striving to list a minimum of three.]
+The exemplars below are for your reference alone - refrain from replication and ensure adherence to the exact format for every response. However, DO NOT QUOTE ANY INFORMATION OR TEXT FROM THESE EXAMPLES! Remember, these are only for illustration.
 
-[Examples provided below. Do not copy.]
-
-Poinsettia
-
-Potassium Deficiency
-
-This deficiency is common in poinsettias, especially when they lack adequate fertilizer. Symptoms include yellowing and browning of leaves, which may eventually fall off. To rectify this issue, consider fertilizing your plant with a potassium-rich fertilizer.
-
-10%
-
-Calcium Deficiency
-
-Poinsettias suffering from calcium deficiency often display symptoms such as distorted or necrotic leaf margins. To address this issue, incorporate a calcium-rich fertilizer into your routine. Additionally, ensure optimal soil pH for better nutrient uptake.
-
-20%
-
-Magnesium Deficiency
-
-Yellowing between the veins of older leaves may indicate magnesium deficiency in poinsettias. To remedy this, add a magnesium-containing fertilizer to your watering routine to promote healthier foliage.
-
-10%
-
-Iron Deficiency
-
-If younger leaves turn yellow while veins remain green, it could signal an iron deficiency. Introduce an iron supplement or adjust soil pH for better iron availability to restore vibrant green color to leaves.
-
-80%
-
-Overwatering
-
-Overwatering can lead to yellowing and wilting of poinsettia leaves. To mitigate this issue, reduce watering frequency.
-
-60%
-
-[Tomato Plant Blossom End Rot example:]
-
-Tomato Plant
-Blossom End Rot
-
-Probability: The tomatoes on your tomato plant are developing blossom end rot, commonly caused by calcium deficiency. Ensure sufficient calcium intake through fertilization or sprays to prevent this issue.
-
-[Tomato and Strawberry Plants example:]
+Vital note: Whenever you overlook adding a description, the following transpires - never fail to include a description, even if succinct - otherwise, the format of my constituents becomes disrupted:
 
 Tomato Plant Blossom End Rot
 
-Address blossom end rot in tomatoes by supplying adequate calcium through fertilizer or spray applications.
+Certainty: The tomatoes on your tomato plant are developing blossom end rot, a common issue stemming from calcium deficiency. Calcium is indispensable for tomatoes as it fortifies cell walls, averting rot. A lack of calcium can lead to blossom end rot, characterized by brown or black spots at the tomato's base. Remediation involves administering a calcium-rich fertilizer to the soil or utilizing a calcium spray.
+
+80%
+
+[IMPORTANT: The subsequent section serves as an illustration of the correct format for two or more plants]:
+
+Tomato and Strawberry Plants
+
+Tomato Plant Blossom End Rot
+
+The tomatoes on your tomato plant are developing blossom end rot, a common issue stemming from calcium deficiency. Calcium is indispensable for tomatoes as it fortifies cell walls, averting rot. A lack of calcium can lead to blossom end rot, characterized by brown or black spots at the tomato's base. Remediation involves administering a calcium-rich fertilizer to the soil or utilizing a calcium spray.
 
 80%
 
 Strawberry Plant Leaf Scorch
 
-Combat leaf scorch in strawberry plants, likely due to magnesium deficiency, with a magnesium-rich fertilizer or spray regimen.
+The strawberry plant leaves have brown spots, a prevalent issue attributable to nutrient deficiency. The likeliest culprit is magnesium deficiency. Magnesium is pivotal for strawberries, aiding chlorophyll production, which imparts the green hue to plants. A magnesium deficiency can manifest as brown spots on leaves. Addressing this involves employing a magnesium-rich fertilizer or spray.
 
 70%
 
-[Example of incorrect format:]
+[EXAMPLE OF INCORRECT FORMAT]:
+[Possible causes should be formatted as actual Issues. Example of incorrect format:]
 
 Unknown
 
-Your sweet potato plant's leaves display yellow spots, possibly due to various factors such as nutrient deficiencies, fungal infections, or insect damage. Seek assistance from your local agricultural extension office for accurate diagnosis and solution recommendations.
+The leaves of your sweet potato plant have developed yellow spots, and you are not sure what is causing the problem. There are a number of possible causes, including nutrient deficiencies, fungal infections, and insect damage. To determine the cause of the problem, you should take a sample of the leaves to your local agricultural extension office. They will be able to help you identify the problem and recommend a solution.
 
-Probability: 50.0%
+Certainty: 50.0%
+
+[DON'T DO THAT. Instead of including the possible causes in an Unknown issue description, separate them into issues for the issues list.]
+
+[DO NOT REPEAT ISSUES - DO NOT USE VAGUE ISSUE TITLES e.g. "Nutrient Deficiency" - SEPARATE OUT POSSIBLE CAUSES INTO ISSUES - "Magnesium Deficiency", "Potassium Deficiency, "Phosphorus Deficiency" etc.]
+
+[ANYTHING IN []'s IS JUST A NOTE FOR YOU AND SHOULD NOT BE INCLUDED IN THE RESPONSES]
+
+[INCORRECT Example below - DO NOT REPEAT ISSUE TITLES! DO NOT COPY TEXT FROM EXAMPLES!]:
+
+Nutrient Deficiency [Do not put this put Magnesium deficiency since that is what you are talking about in the description]
+
+The leaves of your hydrangea plant have developed yellow spots, which is a common problem caused by a magnesium deficiency. Magnesium is an important nutrient for hydrangeas, as it helps to produce chlorophyll, which is the green pigment that gives plants their color. When a hydrangea plant is deficient in magnesium, it can cause the leaves to turn yellow and develop yellow spots. To correct this deficiency, you can add a magnesium-rich fertilizer to the soil or use a magnesium spray.
+
+80%
+
+Nutrient Deficiency [IMPORTANT!!! Do not put 'Nutrient Deficiency' put 'Potassium Deficiency' since that is what you are talking about in the description]
+
+The leaves of your hydrangea plant have developed brown spots, which is a common problem caused by a potassium deficiency. Potassium is an important nutrient for hydrangeas, as it helps to regulate water uptake and transport nutrients throughout the plant. When a hydrangea plant is deficient in potassium, it can cause the leaves to turn brown and develop brown spots. To correct this deficiency, you can add a potassium-rich fertilizer to the soil or use a potassium spray.
+
+70%
+
+Nutrient Deficiency [IMPORTANT! Do not put 'Nutrient Deficiency' for titles put Phosphorus deficiency since that is what you are talking about in the description]
+
+The leaves of your hydrangea plant have developed purple spots, which is a common problem caused by a phosphorus deficiency. Phosphorus is an important nutrient for hydrangeas, as it helps to promote root growth and flowering. When a hydrangea plant is deficient in phosphorus, it can cause the leaves to turn purple and develop purple spots. To correct this deficiency, you can add a phosphorus-rich fertilizer to the soil or use a phosphorus spray.
+
+60%
+
+[CORRECT FORMAT EXAMPLE : IMPORTANT Separate the possible causes into ISSUES - THESE ARE JUST EXAMPLES DO NOT COPY THE TEXT FROM THEM IMPORTANT ]:
+
+Magnesium Deficiency
+
+[INSERT ISSUE DESCRIPTION HERE]
+
+83.2%
+
+Postassium Deficiency
+
+[INSERT ISSUE DESCRIPTION HERE]
+
+77.1%
+
+Phosphorus Deficiency
+
+[INSERT ISSUE DESCRIPTION HERE]
+
+64.3%
+
+
+
+[Example of a correct response below - DO NOT COPY TEXT FROM EXAMPLES!]:
+
+[Plant type:] Tomato Plant
+
+
+Blossom End Rot
+
+The tomatoes on your tomato plant are developing blossom end rot, a common issue stemming from calcium deficiency. Calcium is indispensable for tomatoes as it fortifies cell walls, averting rot. A lack of calcium can lead to blossom end rot, characterized by brown or black spots at the tomato's base. Remediation involves administering a calcium-rich fertilizer to the soil or utilizing a calcium spray.
+
+80%
+
+
+Bacterial Spot
+
+The tomato plant leaves have developed black spots, a prevalent issue attributable to a bacterial infection. The likeliest culprit is bacterial spot, caused by the bacterium Xanthomonas vesicatoria. Bacterial spot can manifest as black spots on leaves, stems, and fruit. Addressing this involves employing a copper-based bactericide or removing and destroying infected plant material.
+
+70%
+
+
+Septoria Leaf Spot
+
+The tomato plant leaves have developed brown spots, a prevalent issue attributable to a fungal infection. The likeliest culprit is Septoria leaf spot, caused by the fungus Septoria lycopersici. Septoria leaf spot can manifest as brown spots on leaves, which can eventually lead to defoliation. Addressing this involves employing a fungicide or removing and destroying infected plant material.
+
+60%
