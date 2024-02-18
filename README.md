@@ -1,8 +1,8 @@
 # Plant Defiency AI Detection Application
 
-This Flask web application leverages Google's Generative AI capabilities to process images of plants with deficiencies. It provides two endpoints, one for handling image URLs and another for image files.
+This application leverages Google's Generative AI capabilities to process images of plants with deficiencies. It provides two endpoints, one for handling image URLs and another for image files.
 
-(Recently added the go server)
+Recently added the go server which is becoming the primary server.
 
 ## Dependencies
 
