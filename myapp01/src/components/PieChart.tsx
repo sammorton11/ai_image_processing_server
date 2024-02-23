@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as V from 'victory';
 
 interface Issue {
@@ -9,19 +9,24 @@ interface Issue {
 
 interface GraphProps {
    issues: Issue[];
-   type: string;
 }
 
 const PieChartComponent: React.FC<GraphProps> = ({ issues }) => {
-
+   const [isFullScreen, setFullScreen] = useState(false);
    const victData = issues.map((issue) => ({
       type: issue.name, percentage: parseInt(issue.percent, 10)
    }));
 
-   console.log("Victory Data: ", victData);
+   const regular = 'm-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg';
+   const fullScreen = 'fixed top-0 left-0 w-full h-full dark:bg-black/90 flex justify-center items-center z-50';
+   const current = isFullScreen ? fullScreen : regular;
+
+   const handleFullScreen = () => {
+      setFullScreen(!isFullScreen);
+   };
 
    return (
-      <div className='m-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
+      <div id='pie-chart' className={current} onClick={handleFullScreen}>
          <V.VictoryPie
             theme={V.VictoryTheme.material}            
             width={500}
