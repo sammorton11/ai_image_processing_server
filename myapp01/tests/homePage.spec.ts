@@ -68,8 +68,6 @@ test('upload incorrect file type', async ({ page }) => {
    const response = await page.locator(`text=${errorText}`).isVisible();
 
    expect(response).toBeTruthy();
-   expect(imgIssue).toBeTruthy();
+   expect(imgIssue).toBeTruthy(); // This shouldn't even be there - frontend should just hide this and an error should be shown instead :)
    expect(isImageDisplayed).toBeFalsy();
-
-
 });

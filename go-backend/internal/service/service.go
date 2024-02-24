@@ -55,6 +55,7 @@ func StringToMap(responseString string) models.PlantData {
 	}
 
 	entryIter := iter(entries[1:]) // start from one because we already grabbed the first line
+
 	for {
 		if len(entryIter) < 3 {
 			break

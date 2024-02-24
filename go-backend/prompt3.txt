@@ -97,7 +97,7 @@ Phosphorus Deficiency
 
 [Example of a correct response below - DO NOT COPY TEXT FROM EXAMPLES!]:
 
-[Plant type:] Tomato Plant
+Tomato Plant
 
 
 Blossom End Rot
