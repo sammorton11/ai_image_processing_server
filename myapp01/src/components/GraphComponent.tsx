@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as V from 'victory';
 
 interface Issue {
@@ -9,41 +9,24 @@ interface Issue {
 
 interface GraphProps {
    issues: Issue[];
-   type: string;
 }
 
-const GraphComponent: React.FC<GraphProps> = ({ issues, type }) => {
-   const percentage_array = issues.map(issue => parseInt(issue.percent, 10));
-   const labels = issues.map(issue => issue.name);
-   console.log(type);
-
-
+const GraphComponent: React.FC<GraphProps> = ({ issues }) => {
+   const [isFullScreen, setFullScreen] = useState(false);
    const victData = issues.map((issue) => ({
       type: issue.name, percentage: parseInt(issue.percent, 10)
    }));
 
-   console.log("Victory Data: ", victData);
+   const regular = 'm-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg';
+   const fullScreen = 'fixed top-0 left-0 w-full h-full dark:bg-black/90 flex justify-center items-center z-50';
+   const current = isFullScreen ? fullScreen : regular;
 
-   const data = {
-      labels: labels,
-      datasets: [
-         {
-            data: percentage_array,
-            backgroundColor: [
-               'rgba(255, 99, 132, 0.6)',
-               'rgba(255, 205, 86, 0.6)',
-               'rgba(75, 192, 192, 0.6)',
-               'rgba(54, 162, 235, 0.6)',
-            ],
-         },
-      ],
+   const handleFullScreen = () => {
+      setFullScreen(!isFullScreen);
    };
 
-   console.log("Labels: ", data.labels);
-   console.log("Data: ", data.datasets[0].data);
-
    return (
-      <div className='m-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
+      <div id='bar-graph' className={current} onClick={handleFullScreen}>
          <V.VictoryChart 
             width={500}
             theme={V.VictoryTheme.material}

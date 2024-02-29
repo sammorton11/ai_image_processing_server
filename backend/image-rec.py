@@ -41,8 +41,6 @@ def send_image_file(image):
     response.resolve()
     response_string = response.candidates[0].content.parts[0].text
     response_as_dictionary = string_to_dict(response_string)
-    print("RESPONSE FROM AI:")
-    print(response_string)
 
     return response_as_dictionary
 
@@ -95,6 +93,7 @@ def string_to_dict(response_string):
 
     # Iterate over entries starting from the second entry
     iter_ent = iter(entries[1:])  # Skip the first entry
+
     for deficiency_name, desc, percent in zip(iter_ent, iter_ent, iter_ent):
         data["issues"].append({
             "name": deficiency_name,

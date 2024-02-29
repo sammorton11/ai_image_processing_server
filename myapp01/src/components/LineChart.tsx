@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as V from 'victory';
 
 interface Issue {
@@ -9,32 +9,41 @@ interface Issue {
 
 interface GraphProps {
    issues: Issue[];
-   type: string;
 }
 
 const LineChartComponent: React.FC<GraphProps> = ({ issues }) => {
+   const [isFullScreen, setFullScreen] = useState(false);
    const victData = issues.map((issue) => ({
       type: issue.name,
       percentage: parseInt(issue.percent, 10),
    }));
 
+   const regular = 'm-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg';
+   const fullScreen = 'fixed top-0 left-0 w-full h-full dark:bg-black/90 flex justify-center items-center z-50';
+   const currentStyle = isFullScreen ? fullScreen : regular;
+
+   const handleFullScreen = () => {
+      setFullScreen(!isFullScreen);
+   };
+
    return (
-      <div className='m-5 rounded-xl dark:bg-neutral-800 bg-lime-100/50 border border-md border-lime-950 shadow-lg'>
+      <div id='line-chart' className={currentStyle} onClick={handleFullScreen}>
          <V.VictoryChart 
             polar 
-            width={500}
+            width={isFullScreen ? window.innerWidth : 500} // Toggle the width depending on the fullscreen state
+            height={isFullScreen ? window.innerHeight : 375} // Toggle the height depending on the fullscreen state
             domainPadding={0}
             theme={V.VictoryTheme.material}>
             <V.VictoryArea
-               style={{ labels: { fontSize: 10 }, data: { fill: "#1a2e05" } }}
+               style={{ data: { fill: "#1a2e05" } }}
                data={victData}
-               x="type"  // Make sure to specify the x-axis data
-               y="percentage"  // Specify the y-axis data
+               x="type"  
+               y="percentage"
             />
             <V.VictoryPolarAxis 
                theme={V.VictoryTheme.material} 
                labelPlacement='vertical'
-               style={{ tickLabels: { padding: 25 }}}
+               style={{ tickLabels: { padding: 25, fontSize: isFullScreen ? 30 : 10}}}
             />
          </V.VictoryChart>
       </div>
