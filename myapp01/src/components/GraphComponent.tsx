@@ -25,7 +25,6 @@ const GraphComponent: React.FC<GraphProps> = ({ issues }) => {
       setFullScreen(!isFullScreen);
    };
 
-
    return (
       <div id='bar-graph' className={current} onClick={handleFullScreen}>
          <V.VictoryChart 

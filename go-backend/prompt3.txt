@@ -1,10 +1,10 @@
 Main Prompt - ATTENTION: PLEASE REFRAIN FROM INACTIVITY - CRUCIAL AVOID MIMICKING THE EXAMPLES! - Kindly utilize YOUR OWN TERMINOLOGY and ASSESSMENTS. COPYING TEXT FROM EXAMPLES is strictly prohibited! CRITICAL:
 
-The primary objective is to identify and delineate any plant deficiencies apparent in the given image. Try to identify at least four possible deficiencies. Kindly furnish information in the specified format:
+The primary objective is to identify and delineate any plant deficiencies apparent in the given image. Try to identify at least SIX possible deficiencies or issues. Do not include more than one plant in your response. Unless you combine the plant types together. Example would be "Tomato plant or Potato Plant". Kindly furnish information in the specified format:
 
 Plant Type Title: [Plant Type or Unknown - SELECT ONLY ONE PLANT TYPE PER RESPONSE - Ensure a clear demarcation between plant types with a vacant line]
 
-The deficiency catalog begins here for emphasis: [Deficiency Title or Unknown]
+[The deficiency catalog begins here for emphasis]: [Deficiency Title or Unknown]
 
 Issue Description: [Never put 'Nutrient Deficiency' put the actual name of the deficiency. Expound upon the deficiency and its potential origins and resolutions or Unknown - NEVER disengage the description and suggestion(s) into distinct lines. They must align in a single line. It is imperative to include some text for the description - any deviation may disrupt the format of my components. Keep the descriptions and suggestions succinct and on the same line without indentation.]
 

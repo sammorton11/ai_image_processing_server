@@ -36,7 +36,6 @@ function ImageUploader(props: ImageUploaderProps): JSX.Element {
                Submit File
             </Button>
          </section>
-
       </div>
    );
 }
