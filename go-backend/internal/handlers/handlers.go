@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 	"main/internal/service"
-	_ "main/internal/service"
 	"mime/multipart"
 	"net/http"
 	"os"
 )
 
+// 10 MB limit for the file size when uploading an image file
 const maxFileSize = 80 << 20
 
 type ImgProcessHandler struct {
@@ -28,6 +28,7 @@ func (h *ImgProcessHandler) ProcessImageURL(w http.ResponseWriter, r *http.Reque
 		http.Error(w, "Failed to read request body", http.StatusBadRequest)
 		return
 	}
+	// Close the request body - why? So that the file descriptor is released to avoid a file descriptor leak.
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
@@ -49,14 +50,15 @@ func (h *ImgProcessHandler) ProcessImageURL(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	// Send the image URL to the gemini api
 	result, err := h.service.SendImageURL(imageFilePath)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	strMap := service.StringToMap(result)
 
-	// Marshal the map to JSON
+	// Convert the response string to a map then to a JSON
+	strMap := h.service.StringToMap(result)
 	jsonResponse, err := json.Marshal(strMap)
 	if err != nil {
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
@@ -69,7 +71,6 @@ func (h *ImgProcessHandler) ProcessImageURL(w http.ResponseWriter, r *http.Reque
 		fmt.Println(err)
 		return
 	}
-
 }
 
 func (h *ImgProcessHandler) ProcessImageFile(w http.ResponseWriter, r *http.Request) {
@@ -95,27 +96,28 @@ func (h *ImgProcessHandler) ProcessImageFile(w http.ResponseWriter, r *http.Requ
 		}
 	}(file)
 
-	pathName, err := service.FileTransfer(w, file)
+	// Transfer the file to the server
+	pathName, err := h.service.FileTransfer(w, file)
 	if err != nil {
 		http.Error(w, "File transfer fail - Internal Server Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	result, err := h.service.SendImageFile(pathName)
+	response, err := h.service.SendImageFile(pathName)
 	if err != nil {
 		http.Error(w, "Failed to send file to api - Internal Server Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	strMap := service.StringToMap(result)
-
-	// Marshal the map to JSON
+	// Convert the response string to a map then to a JSON
+	strMap := h.service.StringToMap(response)
 	jsonResponse, err := json.Marshal(strMap)
 	if err != nil {
 		http.Error(w, "Failed to encode JSON: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Remove the file from the server when complete
 	err = os.Remove(pathName)
 	if err != nil {
 		fmt.Println(err)

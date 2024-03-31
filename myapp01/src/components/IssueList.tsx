@@ -1,26 +1,5 @@
-import React from 'react';
 import { Button } from './ui/button';
-
-interface Issue {
-   name: string;
-   description: string;
-   percent: string;
-}
-
-interface Data {
-   type: string;
-   issues: Issue[];
-}
-interface GraphButton {
-   name: string;
-   onClick: (name: string) => void;
-}
-
-interface IssueListProps {
-   data: Data | null;
-   setData: React.Dispatch<React.SetStateAction<Data | null>>;
-   mappedGraphButtons?: GraphButton[];
-}
+import { IssueListProps } from '../types/types.ts';
 
 function IssueList({ data, setData, mappedGraphButtons }: IssueListProps) {
    if (!data) return null;
