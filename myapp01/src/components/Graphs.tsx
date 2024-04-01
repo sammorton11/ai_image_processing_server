@@ -3,25 +3,12 @@ import PolarAreaChart from "@/components/PolarAreaChart.tsx";
 import RadarChart from "@/components/RadarChart.tsx";
 import LineGraph from "@/components/LineGraph.tsx";
 import DoughnutChart from "@/components/DoughnutChart.tsx";
-import {Data} from "@/types/types.ts";
-import {useMemo} from "react";
+import {GraphProps} from "@/types/types.ts";
 
-interface GraphsProps {
-    data: Data | null,
-    currentGraph: string
-}
 
-function Graphs({data, currentGraph}: GraphsProps) {
-    const keyIssueList = useMemo(() => {
-        return data ? data.issues.map((issue) => issue.name) : [];
-    }, [data]);
+function Graphs({data, currentGraph}: GraphProps) {
     return (
-        <section className="flex flex-row w-full justify-center p-5">
-            <div className="px-10">
-                {keyIssueList.map((issue) => (
-                    <div key={issue} className="p-2">{issue}</div>
-                ))}
-            </div>
+        <section className="flex w-full justify-center p-5">
             {data && (
                 <>
                     {currentGraph === 'Bar' && (

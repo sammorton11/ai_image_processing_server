@@ -25,7 +25,7 @@ const LineGraph: React.FC<LineGraphProps> = ({ labels, data }) => {
    };
 
    return (
-      <div className="w-3/4">
+      <div className="sm:w-full lg:w-3/4">
          <Line data={chartData} />
       </div>
    );
