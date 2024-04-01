@@ -49,7 +49,7 @@ const BarGraph: React.FC<BarGraphProps> = ({ labelData, percentData }) => {
    };
 
    return (
-      <div className="w-3/4">
+      <div className="sm:w-full lg:w-3/4">
          <Bar data={data} />
       </div>
    );

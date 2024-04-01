@@ -42,7 +42,7 @@ const PolarAreaChart: React.FC<PolarAreaChartProps> = ({ labelData, percentData 
    };
 
    return (
-      <div className="w-5/12">
+      <div className="sm:w-full lg:w-5/12">
          <PolarArea data={data} />
       </div>
    );

@@ -1,8 +1,19 @@
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { IssueListProps } from '../types/types.ts';
 
 function IssueList({ data, setData, mappedGraphButtons }: IssueListProps) {
+   const [selectedButton, setSelectedButton] = useState<string>('');
    if (!data) return null;
+
+   const handleGraphButtonClick = (name: string) => {
+      setSelectedButton(name);
+
+      const button = mappedGraphButtons?.find(b => b.name === name);
+      if (button && button.onClick) {
+         button.onClick(name);
+      }
+   } 
 
    return (
       <div className='p-4 sm:w-full lg:w-3/4 bg-lime-100 dark:bg-neutral-800 dark:text-lime-100/50 rounded-md lg:max-w-7xl shadow-lg align-top'>
@@ -24,15 +35,14 @@ function IssueList({ data, setData, mappedGraphButtons }: IssueListProps) {
                </li>
             ))}
             {mappedGraphButtons && (
-               <div className='flex flex-row justify-around pt-8'>
+               <div className='flex lg:flex-row justify-center pt-8'>
                   {mappedGraphButtons.map((button) => {
                      return (
-                        <Button 
-                           key={button.name}
-                           className='bg-lime-200/80 sm:w-[60px] lg:w-[100px]'
-                           onClick={() => button.onClick(button.name)}>
-                              {button.name}
-                        </Button>
+                        <button
+                           key={button.name} // It's good practice to provide a unique key for each item in a list
+                           className={`text-[9px] lg:text-sm w-[100px] m-2 border rounded-md lg:p-[6px] ${selectedButton === button.name ? 'bg-lime-300 text-black border-lime-500' : 'text-neutral-500 border-neutral-500'
+                              }`}
+                           onClick={() => handleGraphButtonClick(button.name)}>{button.name}</button>
                      );
                   })}
                </div>

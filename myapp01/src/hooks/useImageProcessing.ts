@@ -40,7 +40,6 @@ export const useImageProcessing = ({ setData }: UseImageProcessingParams) => {
    };
 
    const processImageFile = async (file: File) => {
-      console.log("HEY", file);
       if (!file) {
          alert('Please upload a valid file');
          return;

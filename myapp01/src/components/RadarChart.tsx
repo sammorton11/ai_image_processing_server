@@ -25,7 +25,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ labels, data }) => {
    };
 
    return (
-      <div className="w-5/12">
+      <div className="h-full sm:w-full lg:w-5/12">
          <Radar data={chartData} />
       </div>
    );
