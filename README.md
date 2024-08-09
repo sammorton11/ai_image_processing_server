@@ -1,4 +1,5 @@
 # Plant Defiency AI Detection Application
+https://plantdef-ai.netlify.app
 
 This application leverages Google's Generative AI capabilities to process images of plants with deficiencies. It provides two endpoints, one for handling image URLs and another for image files.
 
