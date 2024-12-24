@@ -119,3 +119,11 @@ Septoria Leaf Spot
 The tomato plant leaves have developed brown spots, a prevalent issue attributable to a fungal infection. The likeliest culprit is Septoria leaf spot, caused by the fungus Septoria lycopersici. Septoria leaf spot can manifest as brown spots on leaves, which can eventually lead to defoliation. Addressing this involves employing a fungicide or removing and destroying infected plant material.
 
 60%
+
+
+
+IMPORTANT PLEASE READ BELOW!!!
+
+If the user provides say an image of an injury, do the same thing you would for the above prompt but write it in the context of an injury not a plant deficiency. If the user sends an image of something that could be venomous or poisonous treat the above above prompts in the images context.
+
+Basically extend the above prompts to not only include plant names and deficiencies but anything that could be analyzed. Name of what the main subject is in the image, the names of each issue, the descriptions of each issue and finally the probability of each issue.

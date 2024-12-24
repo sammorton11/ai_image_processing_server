@@ -17,7 +17,7 @@ export const useImageProcessing = ({ setData }: UseImageProcessingParams) => {
       setLoading(true);
       setError('');
       try {
-         const response = await fetch('https://plant-ai-go-server-709f8279358b.herokuapp.com/process_image_url', {
+         const response = await fetch('http://localhost:5001/process_image_url', {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json',
@@ -26,6 +26,7 @@ export const useImageProcessing = ({ setData }: UseImageProcessingParams) => {
          });
          if (response.ok) {
             const result: Data = await response.json();
+            console.log("Result:", result);
             setData(result);
          } else {
             setError(`${response.status} - Error sending image to Gemini`)
@@ -50,7 +51,7 @@ export const useImageProcessing = ({ setData }: UseImageProcessingParams) => {
          const formData = new FormData();
          formData.append('img', file);
 
-         const response = await fetch('https://plant-ai-go-server-709f8279358b.herokuapp.com/process_image_file', {
+         const response = await fetch('http://localhost:5001/process_image_file', {
             method: 'POST',
             body: formData,
          });

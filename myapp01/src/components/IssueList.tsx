@@ -18,9 +18,9 @@ function IssueList({ data, setData, mappedGraphButtons }: IssueListProps) {
    return (
       <div className='p-4 sm:w-full lg:w-3/4 bg-lime-100 dark:bg-neutral-800 dark:text-lime-100/50 rounded-md lg:max-w-7xl shadow-lg align-top'>
          <div className='flex flex-row w-full justify-between'>
-            {data.type && (
+            {data.subject_type && (
                <h3 className='dark:text-lime-100/60 text-lime-900 sm:text-xl md:text-2xl lg:text-3xl font-bold pb-4'>
-                  {data.type}
+                  {data.subject_type}
                </h3>
             )}
             <Button className='bg-red-200 text-slate-900 mx-2' onClick={() => setData(null)}>Clear</Button>
@@ -31,7 +31,7 @@ function IssueList({ data, setData, mappedGraphButtons }: IssueListProps) {
                   <div className='font-bold md:text-md lg:text-xl'>{item.name}</div>
                   <div className='lg:text-md'>{item.description}</div>
                   <br />
-                  <div className='lg:text-sm'>Probability: {item.percent}</div>
+                  <div className='lg:text-sm'>Probability: {item.probability}</div>
                </li>
             ))}
             {mappedGraphButtons && (

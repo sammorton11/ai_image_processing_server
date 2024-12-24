@@ -10,14 +10,14 @@ export interface GraphButton {
 }
 
 export interface Data {
-   type: string;
+   subject_type: string;
    issues: Issue[];
 }
 
 export interface Issue {
    name: string;
    description: string;
-   percent: string;
+   probability: number;
 }
 
 export interface GraphProps {

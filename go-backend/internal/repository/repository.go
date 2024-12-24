@@ -30,6 +30,7 @@ const (
 func NewDiskImgRepo() *DiskImageRepository {
 	return &DiskImageRepository{}
 }
+
 func (r *DiskImageRepository) FileTransfer(w http.ResponseWriter, file multipart.File) (string, error) {
 	fileBytes, err := readFile(w, file)
 	if err != nil {
@@ -66,6 +67,7 @@ func (r *DiskImageRepository) FileTransfer(w http.ResponseWriter, file multipart
 
 	return tempFile.Name(), nil
 }
+
 func createDir(w http.ResponseWriter, dir string, pattern string) (*os.File, error) {
 	tempFile, err := os.CreateTemp(dir, pattern)
 	if err != nil {
@@ -99,6 +101,7 @@ func readFile(w http.ResponseWriter, file multipart.File) ([]byte, error) {
 
 	return fileBytes, nil
 }
+
 func (r *DiskImageRepository) ReadImgURL(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -115,7 +118,8 @@ func (r *DiskImageRepository) ReadImgURL(url string) ([]byte, error) {
 }
 
 func (r *DiskImageRepository) ReadPromptTxt() string {
-	path := "prompt3.txt"
+	path := "prompt4.txt"
+
 	content, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println("Failed to read prompt text file:", err)
@@ -124,7 +128,18 @@ func (r *DiskImageRepository) ReadPromptTxt() string {
 	return string(content)
 }
 
+// Turns out we dont need this -- Getting gemini to send json back.
 func (r *DiskImageRepository) StringToMap(responseString string) models.PlantData {
+
+
+   /* var resp models.PlantData
+   err := json.Unmarshal([]byte(responseString), &resp)
+   if err != nil {
+      fmt.Println(err)
+   } */
+
+
+
 	splitString := strings.Split(strings.TrimSpace(responseString), "\n\n")
 	entries := make([]string, len(splitString))
 

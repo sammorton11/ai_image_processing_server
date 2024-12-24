@@ -20,16 +20,16 @@ ChartJS.register(
 
 interface BarGraphProps {
    labelData: string[];
-   percentData: string[];
+   probabilityData: number[];
 }
 
-const BarGraph: React.FC<BarGraphProps> = ({ labelData, percentData }) => {
+const BarGraph: React.FC<BarGraphProps> = ({ labelData, probabilityData }) => {
    const data = {
       labels: labelData,
       datasets: [
          {
             label: 'Deficiencies',
-            data: percentData.map((percent) => parseInt(percent, 10)),
+            data: probabilityData.map((percent) => percent),
             backgroundColor: [
                'rgba(255, 205, 86, 0.2)',
                'rgba(75, 192, 192, 0.2)',

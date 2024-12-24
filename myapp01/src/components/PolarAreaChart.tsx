@@ -12,11 +12,11 @@ ChartJS.register(RadialLinearScale, ArcElement, Tooltip, Legend);
 
 interface PolarAreaChartProps {
    labelData: string[];
-   percentData: string[];
+   probabilityData: number[];
 }
 
-const PolarAreaChart: React.FC<PolarAreaChartProps> = ({ labelData, percentData }) => {
-   const percentAsNumber = percentData.map((percent) => parseInt(percent, 10));
+const PolarAreaChart: React.FC<PolarAreaChartProps> = ({ labelData, probabilityData }) => {
+   const percentAsNumber = probabilityData.map((percent) => percent);
    const data = {
       labels: labelData,
       datasets: [

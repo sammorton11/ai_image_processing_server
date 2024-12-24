@@ -14,31 +14,31 @@ function Graphs({data, currentGraph}: GraphProps) {
                     {currentGraph === 'Bar' && (
                         <BarGraph
                             labelData={data.issues.map((issue) => issue.name)}
-                            percentData={data.issues.map((issue) => issue.percent)}
+                            probabilityData={data.issues.map((issue) => issue.probability)}
                         />
                     )}
                     {currentGraph === 'Polar Area' && (
                         <PolarAreaChart
                             labelData={data.issues.map((issue) => issue.name)}
-                            percentData={data.issues.map((issue) => issue.percent)}
+                            probabilityData={data.issues.map((issue) => issue.probability)}
                         />
                     )}
                     {currentGraph === 'Radar' && (
                         <RadarChart
                             labels={data.issues.map((issue) => issue.name)}
-                            data={data.issues.map((issue) => parseInt(issue.percent, 10))}
+                            data={data.issues.map((issue) => parseInt(issue.probability.toString(), 10))}
                         />
                     )}
                     {currentGraph === 'Line' && (
                         <LineGraph
                             labels={data.issues.map((issue) => issue.name)}
-                            data={data.issues.map((issue) => parseInt(issue.percent, 10))}
+                            data={data.issues.map((issue) => parseInt(issue.probability.toString(), 10))}
                         />
                     )}
                     {currentGraph === 'Doughnut' && (
                         <DoughnutChart
                             labels={data.issues.map((issue) => issue.name)}
-                            data={data.issues.map((issue) => parseInt(issue.percent, 10))}
+                            data={data.issues.map((issue) => parseInt(issue.probability.toString().toString(), 10))}
                         />
                     )}
                 </>

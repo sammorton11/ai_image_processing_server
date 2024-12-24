@@ -13,6 +13,8 @@ import (
 	"google.golang.org/api/option"
 )
 
+
+
 type ImgProcessServ struct {
 	imgRepository repository.ImageRepository
 }
@@ -41,15 +43,13 @@ func (s *ImgProcessServ) SendImageFile(imageFile string) (string, error) {
 
 func (s *ImgProcessServ) sendFile(ctx context.Context, imageBytes []byte) (string, error) {
 	apiKey := os.Getenv("API_KEY")
-
 	client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
 	if err != nil {
 		return "", fmt.Errorf("failed to create AI client: %w", err)
 	}
 	defer client.Close()
 
-	model := client.GenerativeModel("gemini-pro-vision")
-
+	model := client.GenerativeModel("gemini-1.5-flash")
 	promptTxt := s.imgRepository.ReadPromptTxt()
 	prompt := []genai.Part{
 		genai.ImageData("jpeg", imageBytes),
@@ -58,7 +58,7 @@ func (s *ImgProcessServ) sendFile(ctx context.Context, imageBytes []byte) (strin
 
 	resp, err := model.GenerateContent(ctx, prompt...)
 	if err != nil {
-		return "", fmt.Errorf("error generating content: %w", err)
+		return "", fmt.Errorf("Error generating content: %w", err)
 	}
 
 	if resp == nil {
