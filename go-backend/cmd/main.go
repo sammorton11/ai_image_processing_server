@@ -18,8 +18,9 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+        log.Fatalf("Error loading .env file: %s", err.Error())
 	}
+    log.Println("Success loading .env")
 
 	repo := repository.NewDiskImgRepo()
 	imgService := service.New(repo)

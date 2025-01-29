@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/google/generative-ai-go v0.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/rs/cors v1.10.1
 	google.golang.org/api v0.149.0
 )
@@ -18,7 +19,6 @@ require (
 	github.com/google/s2a-go v0.1.7 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/net v0.20.0 // indirect

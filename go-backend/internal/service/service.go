@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
 	"main/internal/models"
 	"main/internal/repository"
 	"mime/multipart"
@@ -41,14 +42,16 @@ func (s *ImgProcessServ) SendImageFile(imageFile string) (string, error) {
 
 func (s *ImgProcessServ) sendFile(ctx context.Context, imageBytes []byte) (string, error) {
 	apiKey := os.Getenv("API_KEY")
+    log.Println("Sending file...")
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey))
 	if err != nil {
-		return "", fmt.Errorf("failed to create AI client: %w", err)
+        log.Printf("Error: %s", err.Error())
+		return "", fmt.Errorf("failed to create AI client: %s", err.Error())
 	}
 	defer client.Close()
 
-	model := client.GenerativeModel("gemini-pro-vision")
+	model := client.GenerativeModel("gemini-1.5-flash")
 
 	promptTxt := s.imgRepository.ReadPromptTxt()
 	prompt := []genai.Part{
@@ -58,10 +61,12 @@ func (s *ImgProcessServ) sendFile(ctx context.Context, imageBytes []byte) (strin
 
 	resp, err := model.GenerateContent(ctx, prompt...)
 	if err != nil {
+        log.Printf("Error: %s", err.Error())
 		return "", fmt.Errorf("error generating content: %w", err)
 	}
 
 	if resp == nil {
+        log.Println("response form gemini was a nil response")
 		return "", fmt.Errorf("unexpected nil response from model.GenerateContent")
 	}
 
