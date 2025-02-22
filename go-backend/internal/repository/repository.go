@@ -3,7 +3,6 @@ package repository
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"main/internal/models"
 	"mime/multipart"
@@ -12,14 +11,16 @@ import (
 	"strings"
 )
 
+// ImageRepository defines core operations for image processing and storage
 type ImageRepository interface {
 	ReadImgURL(url string) ([]byte, error)
 	ReadPromptTxt() string
-	StringToMap(responseString string) models.PlantData
+	StringToTopic(responseString string) models.Topic
 	SaveImage(file io.Reader) (string, error)
 	FileTransfer(w http.ResponseWriter, file multipart.File) (string, error)
 }
 
+// DiskImageRepository implements storage operations using local filesystem
 type DiskImageRepository struct{}
 
 const (
@@ -30,13 +31,15 @@ const (
 func NewDiskImgRepo() *DiskImageRepository {
 	return &DiskImageRepository{}
 }
+
+// FileTransfer handles the upload process from receiving to storing a file
 func (r *DiskImageRepository) FileTransfer(w http.ResponseWriter, file multipart.File) (string, error) {
 	fileBytes, err := readFile(w, file)
 	if err != nil {
 		return "", err
 	}
 
-	// Ensure the "uploads" directory exists
+	// Create uploads directory if missing
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		errMsg := "Failed to create 'uploads' directory: " + err.Error()
 		fmt.Println(errMsg)
@@ -44,7 +47,6 @@ func (r *DiskImageRepository) FileTransfer(w http.ResponseWriter, file multipart
 		return "", err
 	}
 
-	// Create a temporary file in the "uploads" directory
 	tempFile, err := createDir(w, uploadDir, tempFileFmt)
 	if err != nil {
 		log.Println(err)
@@ -58,7 +60,6 @@ func (r *DiskImageRepository) FileTransfer(w http.ResponseWriter, file multipart
 		}
 	}(tempFile)
 
-	// Write the file data to the temporary file
 	err = writeFile(w, tempFile, fileBytes)
 	if err != nil {
 		return "", nil
@@ -66,6 +67,8 @@ func (r *DiskImageRepository) FileTransfer(w http.ResponseWriter, file multipart
 
 	return tempFile.Name(), nil
 }
+
+// Creates temp file in specified directory with given pattern
 func createDir(w http.ResponseWriter, dir string, pattern string) (*os.File, error) {
 	tempFile, err := os.CreateTemp(dir, pattern)
 	if err != nil {
@@ -73,10 +76,10 @@ func createDir(w http.ResponseWriter, dir string, pattern string) (*os.File, err
 		http.Error(w, errMsg, http.StatusInternalServerError)
 		return nil, err
 	}
-
 	return tempFile, nil
 }
 
+// Writes byte data to temporary file
 func writeFile(w http.ResponseWriter, tempFile *os.File, fileBytes []byte) error {
 	_, err := tempFile.Write(fileBytes)
 	if err != nil {
@@ -85,9 +88,10 @@ func writeFile(w http.ResponseWriter, tempFile *os.File, fileBytes []byte) error
 		http.Error(w, errMsg, http.StatusInternalServerError)
 		return err
 	}
-
 	return nil
 }
+
+// Reads multipart file into bytes
 func readFile(w http.ResponseWriter, file multipart.File) ([]byte, error) {
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
@@ -96,9 +100,10 @@ func readFile(w http.ResponseWriter, file multipart.File) ([]byte, error) {
 		http.Error(w, errMsg, http.StatusInternalServerError)
 		return nil, err
 	}
-
 	return fileBytes, nil
 }
+
+// ReadImgURL fetches and returns image bytes from given URL
 func (r *DiskImageRepository) ReadImgURL(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -110,12 +115,12 @@ func (r *DiskImageRepository) ReadImgURL(url string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to read image from response body: %w", err)
 	}
-
 	return imageBytes, nil
 }
 
+// ReadPromptTxt loads prompt template from file
 func (r *DiskImageRepository) ReadPromptTxt() string {
-	path := "prompt3.txt"
+	path := "prompt4.txt"
 	content, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Println("Failed to read prompt text file:", err)
@@ -124,71 +129,38 @@ func (r *DiskImageRepository) ReadPromptTxt() string {
 	return string(content)
 }
 
-func (r *DiskImageRepository) StringToMap(responseString string) models.PlantData {
-	splitString := strings.Split(strings.TrimSpace(responseString), "\n\n")
-	entries := make([]string, len(splitString))
-
-	for i := range splitString {
-		entries[i] = strings.TrimSpace(splitString[i])
+// StringToTopic parses AI response string into Topic struct
+// Format: first line is plant type, following lines grouped in threes (name, description, percentage)
+func (r *DiskImageRepository) StringToTopic(responseString string) models.Topic {
+	lines := strings.Split(strings.TrimSpace(responseString), "\n\n")
+	if len(lines) < 1 {
+		return models.Topic{}
 	}
 
-	data := models.PlantData{
-		Type:   entries[0],
-		Issues: make([]models.PlantIssue, 0),
+	topic := models.Topic{
+		Type:   strings.TrimSpace(lines[0]),
+		Issues: make([]models.Issue, 0),
 	}
 
-	entryIter := iter(entries[1:]) // start from one because we already grabbed the first line
-
-	//for i := 1; i < len(entries); i += 3 {
-	//	if i+3 > len(entries) {
-	//		break
-	//	}
-	//	issue := models.PlantIssue{
-	//		Name:        entries[i],
-	//		Description: entries[i+2],
-	//		Percent:     entries[i+3],
-	//	}
-	//
-	//	data.Issues = append(data.Issues, issue)
-	//	if i+2 > len(entries) {
-	//		break
-	//	}
-	//}
-
-	for {
-		if len(entryIter) < 3 {
-			break
+	// Process remaining lines in groups of three
+	for i := 1; i < len(lines)-2; i += 3 {
+		issue := models.Issue{
+			Name:        strings.TrimSpace(lines[i]),
+			Description: strings.TrimSpace(lines[i+1]),
+			Percent:     strings.TrimSpace(lines[i+2]),
 		}
-
-		deficiencyName, description, percent := <-entryIter, <-entryIter, <-entryIter
-
-		issue := models.PlantIssue{
-			Name:        deficiencyName,
-			Description: description,
-			Percent:     percent,
-		}
-
-		data.Issues = append(data.Issues, issue)
+		topic.Issues = append(topic.Issues, issue)
 	}
-
-	return data
+	return topic
 }
 
-func iter(s []string) <-chan string {
-	c := make(chan string, len(s))
-	for _, value := range s {
-		c <- value
-	}
-	close(c)
-	return c
-}
-
+// SaveImage stores file from Reader, returns path or error
 func (r *DiskImageRepository) SaveImage(file io.Reader) (string, error) {
 	if err := os.MkdirAll("uploads", 0755); err != nil {
 		return "", fmt.Errorf("failed to create 'uploads' directory: %w", err)
 	}
 
-	tempFile, err := ioutil.TempFile("uploads", "uploaded-*.jpg")
+	tempFile, err := os.CreateTemp("uploads", "uploaded-*.jpg")
 	if err != nil {
 		return "", fmt.Errorf("failed to create temporary file: %w", err)
 	}
@@ -202,6 +174,6 @@ func (r *DiskImageRepository) SaveImage(file io.Reader) (string, error) {
 	if _, err := tempFile.Write(fileBytes); err != nil {
 		return "", fmt.Errorf("failed to write to temporary file: %w", err)
 	}
-
 	return tempFile.Name(), nil
 }
+
